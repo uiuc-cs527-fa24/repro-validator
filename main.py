@@ -14,9 +14,9 @@ class MP2InputItem(pydantic.BaseModel):
     bibcode: str
     article_url: str
     title: str
-    authors: str
-    original_source_link: str
-    build_notes: str
+    authors: str = ""
+    original_source_link: str = ""
+    build_notes: str = ""
 
 
 MP2Input = pydantic.TypeAdapter(list[MP2InputItem])

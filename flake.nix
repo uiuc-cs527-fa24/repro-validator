@@ -15,6 +15,7 @@
           pypkgs.pyyaml
           pypkgs.mypy
         ];
+        version = builtins.replaceStrings ["\n"] [""] (builtins.readFile ./version);
       in {
         devShells = {
           default = pkgs.mkShell {
@@ -26,13 +27,13 @@
         packages = rec {
           default = python.pkgs.buildPythonApplication {
             pname = "mp2-validator";
-            version = "0.1.0";
+            version = version;
             propagatedBuildInputs = inputs python.pkgs;
             src = ./.;
           };
           docker = pkgs.dockerTools.buildLayeredImage {
             name = "ghcr.io/uiuc-cs527-fa24/mp2-validator";
-            tag = "0.1.0";
+            tag = version;
             contents = self.packages.${system}.default;
             config = {
               Entrypoint = "${self.packages.${system}.default}/bin/main.py";
