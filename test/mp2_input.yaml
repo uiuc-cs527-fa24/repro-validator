@@ -18,3 +18,10 @@
   authors: str
   original_source_link: https://example.com/foo/bar
   build_notes: str
+
+- bibcode: FakeBibcode4
+  article_url: https://example.com/foo/bar
+  title: str
+  authors: str
+  original_source_link: https://example.com/foo/bar
+  build_notes: str

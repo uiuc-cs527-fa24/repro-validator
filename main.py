@@ -87,7 +87,7 @@ def main(
         has_warnings = False
         console.rule(f"{item.bibcode}")
         if not data_path.exists():
-            warning(item.bibcode, f"No {data_path}")
+            possible_warning(item.bibcode, f"No {data_path}. This is ok if you have two successes PRIOR to this point.")
             continue
 
         try:
@@ -205,6 +205,8 @@ def main(
                         item.bibcode,
                         "crash_reason must be a crash reason from <https://canvas.illinois.edu/courses/49727/pages/crash-reasons-for-mp2>",
                     )
+                    console.print("Currently accepted crash reasons:\n" + "\n".join(map(repr, crash_reasons)))
+                    console.print("Your crash reason: " + repr(data.build.crash_reason))
                     has_warnings = True
 
                 if item.build_notes and data.build.crash_matches_prior is None:
@@ -255,6 +257,15 @@ def main(
                     )
                     has_warnings = True
 
+                if "foo bar" in data.build.bitwise_irreproducible_reason:
+                    warning(
+                        item.bibcode,
+                        "foo bar is placeholder text! Please fill with an acutal reason in bitwise_irreproducible_reason"
+                    )
+
+        if "foo bar" in data.notes:
+            warning(item.bibcode, "foo bar is placeholder text! If you don't have something to say, don't say anything at all in notes.")
+
         if not has_warnings:
             console.print(f"[green]{item.bibcode} is valid :white_check_mark:[/green]")
 
@@ -264,22 +275,22 @@ def main(
 
 
 def fatal_error(string: str, exc: Exception | None = None) -> None:
-    console.print(f"[red]:collision: {string}; aborting[/red]")
+    console.print(f"[red]:collision: Error: {string}; aborting[/red]")
     if exc:
         console.print(exc)
     raise typer.Exit(code=1)
 
 
 def fatal_error_in_bibcode(bibcode: str, string: str) -> None:
-    console.print(f"[red]:collision: {bibcode}: {string}[/red]")
+    console.print(f"[red]:collision: Error: {bibcode}: {string}[/red]")
 
 
 def warning(bibcode: str, string: str) -> None:
-    console.print(f"[yellow]:x: {bibcode}: {string}[/yellow]")
+    console.print(f"[yellow]:x: Warning: {bibcode}: {string}[/yellow]")
 
 
 def possible_warning(bibcode: str, string: str) -> None:
-    console.print(f"[yellow]:face_with_raised_eyebrow: {bibcode}: {string}[/yellow]")
+    console.print(f"[yellow]:face_with_raised_eyebrow: Possible warning: {bibcode}: {string}[/yellow]")
 
 
 crash_reasons = {
