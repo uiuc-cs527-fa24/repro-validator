@@ -13,14 +13,14 @@
           pypkgs.rich
           pypkgs.pydantic
           pypkgs.pyyaml
-          pypkgs.mypy
         ];
         version = builtins.replaceStrings ["\n"] [""] (builtins.readFile ./version);
       in {
         devShells = {
           default = pkgs.mkShell {
             packages = [
-              (pkgs.python312.withPackages inputs)
+              (pkgs.python312.withPackages (pypkgs: (inputs pypkgs) ++ [pypkgs.mypy pypkgs.types-pyyaml]))
+              pkgs.ruff
             ];
           };
         };

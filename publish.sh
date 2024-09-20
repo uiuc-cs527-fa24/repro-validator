@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
+set -ex
 
+mypy --strict main.py
+ruff check main.py
 git tag $(cat version)
 git push --tags
 nix build '.#docker'
