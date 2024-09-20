@@ -214,7 +214,7 @@ def main(
                     )
                     has_warnings = True
 
-                if not item.build_notes or data.build.crash_matches_prior is not None:
+                if not item.build_notes and data.build.crash_matches_prior is not None:
                     warning(
                         item.bibcode,
                         "We did not give you any prior build notes to compare to for this article; please remove crash_matches_prior",
@@ -288,6 +288,7 @@ crash_reasons = {
     "Requires GPU",
     "Needs more RAM",
     "Takes too long",
+    "Requires more time and/or expertise",
 }
 
 
