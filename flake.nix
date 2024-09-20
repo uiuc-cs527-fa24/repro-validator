@@ -32,7 +32,7 @@
             src = ./.;
           };
           docker = pkgs.dockerTools.buildLayeredImage {
-            name = "ghcr.io/uiuc-cs527-fa24/mp2-validator";
+            name = "ghcr.io/charmoniumQ/mp2-validator";
             tag = version;
             contents = self.packages.${system}.default;
             config = {
