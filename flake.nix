@@ -31,7 +31,7 @@
             src = ./.;
           };
           docker = pkgs.dockerTools.buildLayeredImage {
-            name = "mp2-validator";
+            name = "ghcr.io/uiuc-cs527-fa24/mp2-validator";
             tag = "0.1.0";
             contents = self.packages.${system}.default;
             config = {
