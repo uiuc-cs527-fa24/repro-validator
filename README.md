@@ -1,6 +1,6 @@
 # Running
 
-If you don't like Nix, use Docker:
+If you don't like Nix, use Docker (most students should do this one):
 
 ``` sh
 docker run -it --rm -v $PWD:$PWD -w $PWD ghcr.io/uiuc-cs527-fa24/mp2-validator:0.1.2 path/to/cs527
