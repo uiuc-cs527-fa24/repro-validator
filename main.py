@@ -122,13 +122,12 @@ def main(
             )
             has_warnings = True
 
-        if data.source.original_dead and not data.source.google_searches:
-            warning(item.bibcode, "If sources is dead, must do Google searches.")
+        if not data.source.source_downloadable and not data.source.google_searches:
+            warning(item.bibcode, "If source is dead, must do Google searches.")
             has_warnings = True
 
         if not data.source.original_dead and data.source.google_searches:
-            warning(item.bibcode, "If sources is alive, no need for Google searches.")
-            has_warnings = True
+            possible_warning(item.bibcode, "If source is alive, you probably don't need for Google searches.")
 
         if data.source.source_downloadable and not data.source.link_path:
             warning(
@@ -257,7 +256,7 @@ def main(
                     )
                     has_warnings = True
 
-                if "foo bar" in data.build.bitwise_irreproducible_reason:
+                if data.build.bitwise_irreproducible_reason is not None and "foo bar" in data.build.bitwise_irreproducible_reason:
                     warning(
                         item.bibcode,
                         "foo bar is placeholder text! Please fill with an acutal reason in bitwise_irreproducible_reason"
