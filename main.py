@@ -26,7 +26,7 @@ class SourceReport(pydantic.BaseModel):
     original_link: pydantic.HttpUrl | None = None
     original_dead: bool | None = None
     google_searches: list[str] = []
-    link_path: list[pydantic.HttpUrl] = []
+    link_path: list[str | pydantic.HttpUrl] = []
     minutes_spent: int
     source_downloadable: bool
     binary_downloadable: bool = False
@@ -42,7 +42,7 @@ class PackageManagerReport(pydantic.BaseModel):
 
 
 class BuildReport(pydantic.BaseModel):
-    minutes_spent: int
+    minutes_spent: int = 0
     online_references: list[pydantic.HttpUrl] = []
     package_managers_used: list[PackageManagerReport] = []
     skip_build: bool = False
