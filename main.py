@@ -24,7 +24,7 @@ MP2Input = pydantic.TypeAdapter(list[MP2InputItem])
 
 class SourceReport(pydantic.BaseModel):
     original_link: pydantic.HttpUrl | None = None
-    original_dead: bool
+    original_dead: bool | None = None
     google_searches: list[str] = []
     link_path: list[pydantic.HttpUrl] = []
     minutes_spent: int
