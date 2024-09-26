@@ -26,7 +26,7 @@ class SourceReport(pydantic.BaseModel):
     original_link: pydantic.HttpUrl | None = None
     original_dead: bool | None = None
     google_searches: list[str] = []
-    link_path: list[str | pydantic.HttpUrl] = []
+    link_path: list[str | pydantic.AnyUrl] = []
     minutes_spent: int
     source_downloadable: bool
     binary_downloadable: bool = False
