@@ -3,8 +3,8 @@ import typing
 import yarl
 import aiohttp
 import xml.etree.ElementTree
-import schema
-import util
+from . import util
+from . import schema
 
 
 async def mine_articles(

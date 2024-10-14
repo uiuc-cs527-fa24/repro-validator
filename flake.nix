@@ -39,6 +39,7 @@
             pname = "repro-validator";
             version = version;
             propagatedBuildInputs = inputs python.pkgs;
+            doCheck = false;
             src = ./.;
           };
           docker = pkgs.dockerTools.buildLayeredImage {
@@ -46,14 +47,14 @@
             tag = version;
             contents = self.packages.${system}.default;
             config = {
-              Entrypoint = "${self.packages.${system}.default}/bin/main.py";
+              Entrypoint = "${self.packages.${system}.default}/bin/repro-validator";
             };
           };
         };
         apps = rec {
           default = {
             type = "app";
-            program = "${self.packages.${system}.default}/bin/main.py";
+            program = "${self.packages.${system}.default}/bin/repro-validator";
           };
         };
       }

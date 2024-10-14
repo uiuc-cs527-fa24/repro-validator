@@ -6,13 +6,13 @@ import pathlib
 import json
 import yaml
 import yarl
-import schema
 import aiohttp
 import typer
 import asyncio
-import validator
-import dockerfile
-import mine_articles as mine_articles_mod
+from . import schema
+from . import validator
+from . import dockerfile
+from . import mine_articles as mine_articles_mod
 
 
 app = typer.Typer()

@@ -4,7 +4,7 @@ import tempfile
 import pathlib
 import shlex
 import typing
-import schema
+from . import schema
 
 
 def to_dockerfile(

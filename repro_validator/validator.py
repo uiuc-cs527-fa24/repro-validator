@@ -6,8 +6,8 @@ import aiohttp
 import pydantic
 import yaml
 import pathlib
-import schema
-import util
+from . import schema
+from . import util
 
 
 class Level(enum.Enum):
