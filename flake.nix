@@ -13,13 +13,25 @@
           pypkgs.rich
           pypkgs.pydantic
           pypkgs.pyyaml
+          pypkgs.aiohttp
+          pypkgs.aiodns
+          pypkgs.rdflib
+          pypkgs.vcrpy
+        ];
+        dev-inputs = pypkgs: [
+          pypkgs.pytest
+          pypkgs.pytest-asyncio
+          pypkgs.pytest-vcr
+          pypkgs.mypy
+          pypkgs.types-pyyaml
+          pypkgs.types-setuptools
         ];
         version = builtins.replaceStrings ["\n"] [""] (builtins.readFile ./version);
       in {
         devShells = {
           default = pkgs.mkShell {
             packages = [
-              (pkgs.python312.withPackages (pypkgs: (inputs pypkgs) ++ [pypkgs.mypy pypkgs.types-pyyaml]))
+              (pkgs.python312.withPackages (pypkgs: (inputs pypkgs) ++ (dev-inputs pypkgs)))
               pkgs.ruff
             ];
           };

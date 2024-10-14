@@ -1,0 +1,60 @@
+dblp_url: https://dblp.org/rec/journals/taco/VerdoolaegeJCGTC13
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: http://freecode.com/projects/ppcg
+    born_after:
+    earliest_alive_on: 2013-08-01 01:23+00:00
+    latest_alive_on: 2022-03-20 12:17+00:00
+    dead_on: 2024-09-21 10:04-05:00
+    description: URL resolves, but no longer hosts ppcg project
+  tool_names:
+    - ppcg
+  innermost_computational_section_headings:
+    - A Bird’s Eye View of PPCG
+    - Comparison
+    - Methodology
+    - Results
+  source_search:
+    type: SourceFound
+    path:
+      links:
+        - url: https://www.google.com/search?hl=en&q=ppcg%20compiler
+        - url: https://github.com/Meinersbur/ppcg
+          latest_alive_on: 2024-10-14 14:27-05:00
+        - url: https://repo.or.cz/ppcg.git
+          latest_alive_on: 2024-10-14 14:27-05:00
+    is_source_versioned: yes
+    build_attempt:
+      build_directives:
+        - type: apt-get install
+          packages:
+            - git
+            - make
+            - g++
+            - autoconf
+            - automake
+            - libtool
+            - pkg-config
+            - libgmp-dev
+            - libyaml-dev
+            - llvm-10
+            - llvm-10-dev
+            - clang-10
+            - libclang-10-dev
+        - type: RUN
+          cmds:
+            - update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100
+            - update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10 100
+        - type: RUN
+          cmds:
+            - git clone git://repo.or.cz/ppcg.git --recursive
+            - ./autogen.sh
+            - ./configure
+            - make
+      test_directives:
+        - type: RUN
+          cmds:
+            - make check
+      result:
+        type: BuildAndTestSuccess
