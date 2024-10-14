@@ -11,4 +11,4 @@ git tag $(cat version)
 git push --tags
 nix build '.#docker'
 docker load < result
-docker push ghcr.io/charmoniumq/mp2-validator:$(cat version)
+docker push ghcr.io/charmoniumq/repro-validator:$(cat version)

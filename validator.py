@@ -307,9 +307,9 @@ async def validate_link_path(
         link1_host = (link1.url.host or "").lower().encode()
         link1_path = (link1.url.path or "").lower().encode()
         _, link0_status, link0_url, link0_page = await link0_results
-        if link1_host == "web.archive.org":
-            archived_url = link1_path.split("/")[2]
-            if archived_url != str(link0.url):
+        if link1_host == b"web.archive.org":
+            archived_url = link1_path.split(b"/")[2]
+            if archived_url != str(link0.url).encode():
                 yield (
                     Level.error,
                     f"{link1.url!s} is an archive URL, but it does not look like an archived version of {link0.url!s}",

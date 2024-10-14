@@ -1,6 +1,4 @@
 {
-  description = "Flake utils demo";
-
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -38,13 +36,13 @@
         };
         packages = rec {
           default = python.pkgs.buildPythonApplication {
-            pname = "mp2-validator";
+            pname = "repro-validator";
             version = version;
             propagatedBuildInputs = inputs python.pkgs;
             src = ./.;
           };
           docker = pkgs.dockerTools.buildLayeredImage {
-            name = "ghcr.io/charmoniumQ/mp2-validator";
+            name = "ghcr.io/charmoniumQ/repro-validator";
             tag = version;
             contents = self.packages.${system}.default;
             config = {
