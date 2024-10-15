@@ -12,6 +12,7 @@ git add -A
 git commit -m "Bump version to $(cat version)"
 git tag $(cat version)
 git push --tags
+git push
 nix build '.#docker'
 docker load < result
 docker push ghcr.io/charmoniumq/repro-validator:$(cat version)
