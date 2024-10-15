@@ -98,8 +98,7 @@ You may always use `type: Raw RUN` as an escape hatch, if the structured format 
   ```yaml
 
   - type: Raw RUN
-    cmds: |
-      (arbitrary commands | not=supported) && by structured || cmd
+    cmds: '(arbitrary commands | not=supported) && by structured || cmd'
   ```
 
 There is also a special syntax for apt-get install. Previously, each student did this operation slightly differently. This will reduce the repeated code across Dockerfiles, increase analyzability, and enforce best practices:

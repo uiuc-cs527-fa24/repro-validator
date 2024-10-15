@@ -136,14 +136,18 @@ def test_run_cmd_coercer(
     r = schema.Run(
         type="RUN",
         cmds=[
-            "ls foo bar",
+            "ls foo bar", # type: ignore
             schema.Command(
                 args=["cat", "bar", "baz"],
             ),
+            {  # type: ignore
+                "args": ["spam", "eggs"]
+            },
         ],
     )
     assert r.cmds[0] == schema.Command(args=["ls", "foo", "bar"])
     assert r.cmds[1] == schema.Command(args=["cat", "bar", "baz"])
+    assert r.cmds[2] == schema.Command(args=["spam", "eggs"])
 
 
 @pytest.mark.asyncio
