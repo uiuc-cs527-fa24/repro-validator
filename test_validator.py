@@ -130,6 +130,22 @@ async def test_invalid_ids(
     )
 
 
+def test_run_cmd_coercer(
+    aiohttp_client: aiohttp.ClientSession,
+) -> None:
+    r = schema.Run(
+        type="RUN",
+        cmds=[
+            "ls foo bar",
+            schema.Command(
+                args=["cat", "bar", "baz"],
+            ),
+        ],
+    )
+    assert r.cmds[0] == schema.Command(args=["ls", "foo", "bar"])
+    assert r.cmds[1] == schema.Command(args=["cat", "bar", "baz"])
+
+
 @pytest.mark.asyncio
 @pytest.mark.vcr
 async def test_valid_article_yaml(
