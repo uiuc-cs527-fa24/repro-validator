@@ -9,10 +9,11 @@ from . import schema
 
 def to_dockerfile(
     base_path: pathlib.Path,
+    base_image: schema.BaseImage,
     directives: typing.Sequence[schema.DockerfileDirective],
 ) -> pathlib.Path:
     tempdir = pathlib.Path(tempfile.mkdtemp())  # TODO: this
-    (tempdir / "Dockerfile").write_text(to_dockerfile_source(directives))
+    (tempdir / "Dockerfile").write_text(to_dockerfile_source(base_image, directives))
     for directive in directives:
         if isinstance(directive, schema.CopyFile):
             shutil.copy2(base_path / directive.source, tempdir / directive.source)
@@ -20,9 +21,12 @@ def to_dockerfile(
 
 
 def to_dockerfile_source(
+    base_image: schema.BaseImage,
     directives: typing.Sequence[schema.DockerfileDirective],
 ) -> str:
-    lines = []
+    lines = [
+        f"FROM {base_image.name}:{base_image.tag}"
+    ]
     for directive in directives:
         if isinstance(directive, schema.Run):
             lines.append("RUN \\")
@@ -57,7 +61,7 @@ def to_dockerfile_source(
                                     else ""
                                 ),
                                 ("|| true" if command.ignore_failure else ""),
-                                ("\\" if not is_last else ""),
+                                ("&& \\" if not is_last else ""),
                             ],
                         )
                     )

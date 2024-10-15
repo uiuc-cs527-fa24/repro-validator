@@ -84,6 +84,7 @@ def export_dockerfile(
 
     result = dockerfile.to_dockerfile(
         article_yaml.resolve().parent,
+        article.computational_status.source_search.build_attempt.base_image,
         [
             *article.computational_status.source_search.build_attempt.build_directives,
             *article.computational_status.source_search.build_attempt.test_directives,

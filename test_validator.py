@@ -1,5 +1,7 @@
+import subprocess
 import pydantic_core
 import collections
+import yaml
 import typing
 import aiohttp
 import pathlib
@@ -7,6 +9,7 @@ import pytest
 import pytest_asyncio
 from repro_validator import validator
 from repro_validator import schema
+from repro_validator import dockerfile
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -167,6 +170,30 @@ async def test_valid_article_yaml(
             level in {validator.Level.error, validator.Level.fatal_error}
             for level, msg in errors
         ]
+    )
+
+
+def test_dockerfile_build(
+) -> None:
+    article_yaml = pathlib.Path("test_cases/valid.yaml")
+    article_yaml_text = article_yaml.read_text()
+    article_dict = yaml.safe_load(article_yaml_text)
+    article = schema.Article(**article_dict)
+    assert isinstance(article.computational_status, schema.ComputationalArticle)
+    assert isinstance(article.computational_status.source_search, schema.SourceFound)
+    assert article.computational_status.source_search.build_attempt is not None
+    print(article.computational_status.source_search.build_attempt.base_image)
+    result = dockerfile.to_dockerfile(
+        pathlib.Path(),
+        article.computational_status.source_search.build_attempt.base_image,
+        [
+            *article.computational_status.source_search.build_attempt.build_directives,
+            *article.computational_status.source_search.build_attempt.test_directives,
+        ],
+    )
+    subprocess.run(
+        ["podman", "build", result],
+        check=True,
     )
 
 

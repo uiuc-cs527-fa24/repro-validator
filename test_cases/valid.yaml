@@ -26,6 +26,9 @@ computational_status:
           latest_alive_on: 2024-10-14 14:27-05:00
     is_source_versioned: yes
     build_attempt:
+      base_image:
+        name: ubuntu
+        tag: "18.04"
       build_directives:
         - type: apt-get install
           packages:

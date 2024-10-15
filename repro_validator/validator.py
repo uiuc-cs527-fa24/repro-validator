@@ -93,12 +93,6 @@ async def validate_article(
             )
 
             if source.build_attempt is not None:
-                if "slim" not in source.build_attempt.base_image.tag:
-                    yield (
-                        Level.possible_error,
-                        "Not using a slim base-image. This is acceptable if the slim base image doesn't work.",
-                    )
-
                 for directive in [
                     *source.build_attempt.build_directives,
                     *source.build_attempt.test_directives,

@@ -237,7 +237,7 @@ class BaseImage(pydantic.BaseModel):
 
 
 class BuildAttempt(pydantic.BaseModel):
-    base_image: BaseImage = BaseImage(name="ubuntu", tag="16.04-slim")
+    base_image: BaseImage = BaseImage(name="ubuntu", tag="16.04")
     """Base-image and tag for build and test
 
     Use base-images in this order of preference:
