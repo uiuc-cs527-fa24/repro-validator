@@ -370,7 +370,9 @@ class Run(DockerfileDirective, pydantic.BaseModel):
     """Eval this string before continuing. Can be $(subshell)"""
 
 
-def parse_cmds(cmds: list[Command | str | typing.Mapping[str, typing.Any]]) -> typing.Sequence[Command]:
+def parse_cmds(
+    cmds: list[Command | str | typing.Mapping[str, typing.Any]],
+) -> typing.Sequence[Command]:
     ret = []
     for cmd in cmds:
         if isinstance(cmd, str):
