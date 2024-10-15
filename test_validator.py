@@ -5,8 +5,8 @@ import aiohttp
 import pathlib
 import pytest
 import pytest_asyncio
-import validator
-import schema
+from repro_validator import validator
+from repro_validator import schema
 
 
 @pytest_asyncio.fixture(scope="function")

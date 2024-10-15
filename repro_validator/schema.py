@@ -358,7 +358,8 @@ class Run(DockerfileDirective, pydantic.BaseModel):
     type: typing.Literal["RUN"] = "RUN"
 
     cmds: typing.Annotated[
-        typing.Sequence[Command], pydantic.BeforeValidator(parse_cmds)
+        typing.Sequence[Command],
+        pydantic.BeforeValidator(parse_cmds),
     ]
     """cmds accepts a list of strings"""
 
@@ -369,13 +370,16 @@ class Run(DockerfileDirective, pydantic.BaseModel):
     """Eval this string before continuing. Can be $(subshell)"""
 
 
-def parse_cmds(cmds: list[Command] | list[str]) -> typing.Sequence[Command]:
-    if isinstance(cmds, list) and isinstance(cmds[0], Command):
-        return typing.cast(list[Command], cmds)
-    elif isinstance(cmds, list) and isinstance(cmds[0], str):
-        return [Command(args=shlex.split(cmd)) for cmd in typing.cast(list[str], cmds)]
-    else:
-        raise TypeError(f"Unexpected cmds: {cmds!r}, cmds[0]: {cmds[0]!r}")
+def parse_cmds(cmds: list[Command | str]) -> typing.Sequence[Command]:
+    ret = []
+    for cmd in cmds:
+        if isinstance(cmd, str):
+            ret.append(Command(args=shlex.split(cmd)))
+        elif isinstance(cmd, Command):
+            ret.append(cmd)
+        else:
+            raise TypeError(f"Unexpected cmds: {cmds!r}, cmds[0]: {cmds[0]!r}")
+    return ret
 
 
 class Command(pydantic.BaseModel):
