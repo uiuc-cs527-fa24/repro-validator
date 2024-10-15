@@ -24,9 +24,7 @@ def to_dockerfile_source(
     base_image: schema.BaseImage,
     directives: typing.Sequence[schema.DockerfileDirective],
 ) -> str:
-    lines = [
-        f"FROM {base_image.name}:{base_image.tag}"
-    ]
+    lines = [f"FROM {base_image.name}:{base_image.tag}"]
     for directive in directives:
         if isinstance(directive, schema.Run):
             lines.append("RUN \\")
