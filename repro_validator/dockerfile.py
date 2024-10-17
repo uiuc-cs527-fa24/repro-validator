@@ -71,7 +71,7 @@ def to_dockerfile_source(
             lines.append("ENV \\")
             for (var, val), is_last in is_last_sentinel(directive.mapping.items()):
                 lines.append(
-                    f"    {var}={shlex.quote(val)}" + (" \\" if is_last else "")
+                    f"    {var}={shlex.quote(val)}" + (" \\" if not is_last else "")
                 )
         elif isinstance(directive, schema.CopyFileLiteral):
             lines.append(f"RUN cat <<EOF > {directive.destination!s}\\")
