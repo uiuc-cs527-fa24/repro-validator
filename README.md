@@ -3,13 +3,13 @@
 If you don't like Nix, use Docker (most students should do this one):
 
 ``` sh
-docker run -it --rm -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.7 validate bibcode.yaml
+docker run -it --rm -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.8 validate bibcode.yaml
 ```
 
 If you don't like Docker, use Nix:
 
 ``` sh
-nix run github:uiuc-cs527-fa24/repro-validator/0.2.7 -- validate bibcode.yaml
+nix run github:uiuc-cs527-fa24/repro-validator/0.2.8 -- validate bibcode.yaml
 ```
 
 Whichever method, you have the following subcommands:
