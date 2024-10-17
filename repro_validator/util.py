@@ -5,29 +5,11 @@ import pydantic_core
 
 
 def pydantic_to_yarl(url: pydantic_core.Url) -> yarl.URL:
-    return yarl.URL.build(
-        scheme=url.scheme,
-        user=url.username,
-        password=url.password,
-        host=url.host or "",
-        # port=url.port,
-        path=url.path or "",
-        query_string=url.query or "",
-        fragment=url.fragment or "",
-    )
+    return yarl.URL(str(url))
 
 
 def yarl_to_pydantic(url: yarl.URL) -> pydantic_core.Url:
-    return pydantic_core.Url.build(
-        scheme=url.scheme,
-        username=url.user,
-        password=url.password,
-        host=url.host or "",
-        # port=url.port,
-        path=url.path,
-        query=url.query_string,
-        fragment=url.fragment,
-    )
+    return pydantic_core.Url(str(url))
 
 
 console = rich.console.Console()
