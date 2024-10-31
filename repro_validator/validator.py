@@ -60,6 +60,12 @@ async def validate_article(
         util.pydantic_to_yarl(article.dblp_url).with_suffix(".ttl"),
     )
 
+    if article.badges is None:
+        yield (
+            Level.error,
+            "Please fill badges with a list of ACM badges the article earned or empty-list",
+        )
+
     if isinstance(article.computational_status, schema.Unknown):
         yield (Level.error, "computational_status should be filled")
     elif isinstance(article.computational_status, schema.ComputationalArticle):

@@ -71,11 +71,14 @@ def to_dockerfile_source(
         elif isinstance(directive, schema.Env):
             lines.append("ENV \\")
             for (var, val), is_last in is_last_sentinel(directive.mapping.items()):
-                lines.append(
-                    f"    {var}=\"{val}\"" + (" \\" if not is_last else "")
-                )
+                lines.append(f'    {var}="{val}"' + (" \\" if not is_last else ""))
         elif isinstance(directive, schema.CopyFileLiteral):
-            lines.append(f"RUN cat <<EOF > {directive.destination!s}" + " && chmod +x {directive.destination!s}" if directive.executable else "")
+            lines.append(
+                f"RUN cat <<EOF > {directive.destination!s}"
+                + " && chmod +x {directive.destination!s}"
+                if directive.executable
+                else ""
+            )
             lines.append(directive.contents)
             lines.append("EOF")
         elif isinstance(directive, schema.CopyFile):

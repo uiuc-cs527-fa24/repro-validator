@@ -3,7 +3,6 @@ import pydantic
 from typing_extensions import Annotated
 import asyncio
 import subprocess
-import shutil
 import os
 import pathlib
 import json
@@ -32,8 +31,11 @@ def validate(
     use_archive_org: bool = False,
 ) -> None:
     rich.traceback.install(show_locals=False)
+
     async def async_validatation_successful() -> bool:
-        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl)) as session:
+        async with aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(ssl=ssl)
+        ) as session:
             has_errors = False
             async for level, message in validator.validate_article_yaml(
                 path, session, use_archive_org
@@ -100,10 +102,10 @@ def export_dockerfile(
             *article.computational_status.source_search.build_attempt.test_directives,
         ],
     )
-    uid = int(os.environ["UID"]) if "UID" in os.environ else None
-    gid = int(os.environ["GID"]) if "GID" in os.environ else None
-    shutil.chown(result.parent, uid, gid)
-    shutil.chown(result, uid, gid)
+    uid = int(os.environ["UID"]) if "UID" in os.environ else -1
+    gid = int(os.environ["GID"]) if "GID" in os.environ else -1
+    os.chown(result.parent, uid, gid)
+    os.chown(result, uid, gid)
     console.print(f"[green]{result!s}")
     if not build:
         console.print(f"[green]Run:\n\n  docker build {result.parent!s}\n")
@@ -119,7 +121,9 @@ def mine_articles(
     other_data: str = "{}",
 ) -> None:
     async def mine_articles_async() -> None:
-        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl)) as aiohttp_client:
+        async with aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(ssl=ssl)
+        ) as aiohttp_client:
             article_group = await mine_articles_mod.mine_articles(
                 aiohttp_client,
                 yarl.URL(toc_page),

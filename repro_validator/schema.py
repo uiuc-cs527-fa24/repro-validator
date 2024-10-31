@@ -64,7 +64,7 @@ class Article(pydantic.BaseModel):
 
     """
 
-    badges: set[Badge]
+    badges: set[Badge] | None = None
     """What badges, if any, this article has.
 
     """
@@ -308,8 +308,10 @@ class BuildCrash(pydantic.BaseModel):
 
 class ErrorCode(enum.Enum):
     """If you don't have a specific error code in mind, use `unassigned`."""
+
     missing_data = enum.auto()
     unassigned = enum.auto()
+
 
 class TestFail(pydantic.BaseModel):
     type: typing.Literal["TestFail"]

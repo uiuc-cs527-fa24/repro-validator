@@ -43,6 +43,7 @@ async def mine_articles(
         other_data=other_data,
     )
 
+
 # To do that, you need to write a script that turns DBLP results into list of bibcodes, preferably formatted according to my YAML schema (each bibcode should turn into YAML file with the bibcode as its name with 1 field; data-collection students will fill in the rest). I started writing one [here](https://github.com/uiuc-cs527-fa24/repro-validator/blob/main/repro_validator/mine_articles.py) but it is untested. We would also want a second script to:
 
 # 1. Deterministically shuffle the article list. The proceedings of a conference like ASPLOS are ordered by session; if we sample in order, we only sample the first N / M sessions rather than some from every sessions. Different sessions may have different orientations to reproducibility. The shuffle should be deterministic (seeded RNG) so we can re-run and get the same order though.
