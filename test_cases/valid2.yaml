@@ -1,0 +1,49 @@
+dblp_url: https://dblp.org/rec/journals/corr/AhmanFHMRS17
+badges: []
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - FStar
+  innermost_computational_section_headings:
+    - 2.4 Monotonic References
+    - 3.4 Correctness, Authenticity, and Secrecy of File Transfer
+    - 5.5 Proof-theoretic Properties of the Logic of Pre- and Postconditions
+    - 6.5 Discussion
+  source_search:
+    type: SourceFound
+    path:
+      links:
+        - url: https://dl.acm.org/doi/10.1145/3158153
+        - url: https://dl.acm.org/doi/pdf/10.1145/3158153
+        - url: https://github.com/FStarLang/FStar/releases/tag/v0.9.5.0
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 60
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - curl
+            - make
+            - libgomp1
+            - ca-certificates
+        - type: RUN
+          cmds:
+            - curl -L -O https://github.com/FStarLang/FStar/releases/download/v0.9.5.0/fstar_0.9.5.0_Linux_x86_64.tar.gz
+            - tar -xzvf fstar_0.9.5.0_Linux_x86_64.tar.gz
+        - type: ENV
+          mapping:
+            PATH: /fstar/bin:$PATH
+        - type: RUN
+          cmds:
+            - fstar.exe --version
+            - z3 --version
+      test_directives:
+        - type: RUN
+          cmds:
+            - make -C fstar/examples/micro-benchmarks
+      result:
+        type: BuildAndTestSuccess

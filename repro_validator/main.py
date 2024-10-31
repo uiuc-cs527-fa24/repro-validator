@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 import pydantic
 from typing_extensions import Annotated
-import rich.console
+import asyncio
+import subprocess
+import shutil
+import os
 import pathlib
 import json
 import yaml
+import rich.console
+import rich.traceback
 import yarl
 import aiohttp
 import typer
-import asyncio
+import ssl as libssl
+import certifi
 from . import schema
 from . import validator
 from . import dockerfile
@@ -17,6 +23,7 @@ from . import mine_articles as mine_articles_mod
 
 app = typer.Typer()
 console = rich.console.Console()
+ssl = libssl.create_default_context(cafile=certifi.where())
 
 
 @app.command()
@@ -24,8 +31,9 @@ def validate(
     path: Annotated[pathlib.Path, typer.Argument(help="Path to $bibcode.yaml")],
     use_archive_org: bool = False,
 ) -> None:
+    rich.traceback.install(show_locals=False)
     async def async_validatation_successful() -> bool:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl)) as session:
             has_errors = False
             async for level, message in validator.validate_article_yaml(
                 path, session, use_archive_org
@@ -49,7 +57,9 @@ def validate(
 @app.command()
 def export_dockerfile(
     article_yaml: pathlib.Path,
+    build: bool = False,
 ) -> None:
+    rich.traceback.install(show_locals=False)
     try:
         article_yaml_text = article_yaml.read_text()
     except Exception as exc:
@@ -90,8 +100,17 @@ def export_dockerfile(
             *article.computational_status.source_search.build_attempt.test_directives,
         ],
     )
+    uid = int(os.environ["UID"]) if "UID" in os.environ else None
+    gid = int(os.environ["GID"]) if "GID" in os.environ else None
+    shutil.chown(result.parent, uid, gid)
+    shutil.chown(result, uid, gid)
     console.print(f"[green]{result!s}")
-    console.print(f"[green]Run:\n    docker build {result.parent!s}\n")
+    if not build:
+        console.print(f"[green]Run:\n\n  docker build {result.parent!s}\n")
+    else:
+        subprocess.run(
+            ["docker", "build", str(result.parent)],
+        )
 
 
 def mine_articles(
@@ -100,7 +119,7 @@ def mine_articles(
     other_data: str = "{}",
 ) -> None:
     async def mine_articles_async() -> None:
-        async with aiohttp.ClientSession() as aiohttp_client:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl)) as aiohttp_client:
             article_group = await mine_articles_mod.mine_articles(
                 aiohttp_client,
                 yarl.URL(toc_page),

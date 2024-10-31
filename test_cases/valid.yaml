@@ -1,4 +1,5 @@
 dblp_url: https://dblp.org/rec/journals/taco/VerdoolaegeJCGTC13
+badges: []
 computational_status:
   type: ComputationalArticle
   source_link_used_by_cp16:
@@ -26,6 +27,7 @@ computational_status:
           latest_alive_on: 2024-10-14 14:27-05:00
     is_source_versioned: yes
     build_attempt:
+      time_spent: 60
       base_image:
         name: ubuntu
         tag: "18.04"
@@ -51,13 +53,29 @@ computational_status:
             - update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10 100
         - type: RUN
           cmds:
-            - git clone git://repo.or.cz/ppcg.git --recursive
+            - git clone git://repo.or.cz/ppcg.git
+            - cd ppcg
+            - git submodule init
+            - git submodule update
             - ./autogen.sh
-            - ./configure
-            - make
+            # Don't actually compile this in the test suite, since it would take a long time
+            # - ./configure
+            # - make
+        - type: Raw RUN
+          cmds: |
+            echo "hello" > world && cat world | tee
+        - type: ENV
+          mapping:
+            PATH: /opt/bin:$PATH
+        - type: COPY file literal
+          contents: "#!/usr/bin/env
+            echo hi"
+          destination: /foo/bar
+          executable: true
       test_directives:
         - type: RUN
           cmds:
-            - make check
+            # - make check
+            - "true"
       result:
         type: BuildAndTestSuccess

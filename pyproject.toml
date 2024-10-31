@@ -1,3 +1,24 @@
 [build-system]
 requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [ "repro_validator" ]
+
+[project]
+name = "Repro-validator"
+version = "0.2.10"
+dependencies = [
+    "typer",
+    "rich",
+    "pydantic",
+    "pyyaml",
+    "aiohttp",
+    "aiodns",
+    "rdflib",
+    "vcrpy",
+    "certifi",
+]
+
+[project.scripts]
+repro-validator = "repro_validator.main:app"

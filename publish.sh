@@ -4,15 +4,16 @@ set -ex
 mypy --strict --package repro_validator
 ruff format repro_validator
 ruff check --fix repro_validator
-if [ "$(grep $(cat version) README.md | wc -l)" -ne 2 ]; then
+version=$(python -c 'import pathlib, tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
+if [ "$(grep -c "${version}" README.md)" -ne 2 ]; then
     echo 'Is README.md updated to refer to the new version?'
     exit
 fi
 git add -A
-git commit -m "Bump version to $(cat version)"
-git tag $(cat version)
+git commit -m "Bump version to ${version}"
+git tag "${version}"
 git push --tags
 git push
 nix build '.#docker'
 docker load < result
-docker push ghcr.io/charmoniumq/repro-validator:$(cat version)
+docker push "ghcr.io/charmoniumq/repro-validator:${version}"

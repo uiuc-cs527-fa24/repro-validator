@@ -1,15 +1,23 @@
 # Running
 
-If you don't like Nix, use Docker (most students should do this one):
+Using Python 3.12, run
 
 ``` sh
-docker run -it --rm -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.9 validate bibcode.yaml
+rm --recursive --force .venv
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade https://github.com/uiuc-cs527-fa24/repro-validator/archive/main.zip
+repro-validator validate bibcode.yaml
 ```
 
-If you don't like Docker, use Nix:
+If you don't have Python 3.12, try using Nix (from source) or Docker (binary).
 
 ``` sh
-nix run github:uiuc-cs527-fa24/repro-validator/0.2.9 -- validate bibcode.yaml
+nix run github:uiuc-cs527-fa24/repro-validator/0.2.10 -- validate bibcode.yaml
+
+# or
+
+docker run --rm -t -e TERM=$TERM -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.10 validate bibcode.yaml
 ```
 
 Whichever method, you have the following subcommands:
@@ -114,4 +122,20 @@ Once you have the Dockerfile translated into a structured YAML format, you can u
 
 Finally, logically related commands should be grouped into as single RUN, and a single RUN should only hold logically related commands. I.e., one library's download, configure, build, install should be combined into one `RUN`. I will help with this during the review process.
 
+There is also `ENV`:
+
+``` yaml
+- type: ENV
+  mapping:
+    PATH: "/opt/bin/path:$PATH"
+```
+
 Note: there is no equivalent of `WORKDIR`. Simply `cd` at the beginning of your `RUN` or use `env --chdir $dir $cmd...`.
+
+## Changelog
+
+### 0.2.10
+  - Added `badges` (list of ACM badges). See [`schema.py`](./repro_validator/schema.py) for details.
+  - `time_spent` (minutes of time spent on build). See [`schema.py`](./repro_validator/schema.py) for details.
+  - Fixed the SSL error.
+  - New instructions in this README now write the Dockerfile as the user rather than root.

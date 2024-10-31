@@ -15,6 +15,7 @@
           pypkgs.aiodns
           pypkgs.rdflib
           pypkgs.vcrpy
+          pypkgs.certifi
         ];
         dev-inputs = pypkgs: [
           pypkgs.pytest
@@ -22,9 +23,8 @@
           pypkgs.pytest-vcr
           pypkgs.mypy
           pypkgs.types-pyyaml
-          pypkgs.types-setuptools
         ];
-        version = builtins.replaceStrings ["\n"] [""] (builtins.readFile ./version);
+        version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;
       in {
         devShells = {
           default = pkgs.mkShell {
@@ -36,16 +36,22 @@
         };
         packages = rec {
           default = python.pkgs.buildPythonApplication {
+            pyproject = true;
             pname = "repro-validator";
             version = version;
             propagatedBuildInputs = inputs python.pkgs;
+            nativeBuildInputs = [ python.pkgs.setuptools ];
             doCheck = false;
             src = ./.;
           };
-          docker = pkgs.dockerTools.buildLayeredImage {
+          docker = let
+            py = python.withPackages(ps: [ps.aiohttp ps.aiodns ps.requests ps.certifi]);
+          in pkgs.dockerTools.buildLayeredImage {
             name = "ghcr.io/charmoniumQ/repro-validator";
             tag = version;
-            contents = self.packages.${system}.default;
+            contents = [
+              self.packages.${system}.default
+            ];
             config = {
               Entrypoint = "${self.packages.${system}.default}/bin/repro-validator";
             };

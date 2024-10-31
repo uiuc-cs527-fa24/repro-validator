@@ -13,11 +13,12 @@ def to_dockerfile(
     directives: typing.Sequence[schema.DockerfileDirective],
 ) -> pathlib.Path:
     tempdir = pathlib.Path(tempfile.mkdtemp())  # TODO: this
-    (tempdir / "Dockerfile").write_text(to_dockerfile_source(base_image, directives))
+    dockerfile = tempdir / "Dockerfile"
+    dockerfile.write_text(to_dockerfile_source(base_image, directives))
     for directive in directives:
         if isinstance(directive, schema.CopyFile):
             shutil.copy2(base_path / directive.source, tempdir / directive.source)
-    return tempdir
+    return dockerfile
 
 
 def to_dockerfile_source(
@@ -71,15 +72,12 @@ def to_dockerfile_source(
             lines.append("ENV \\")
             for (var, val), is_last in is_last_sentinel(directive.mapping.items()):
                 lines.append(
-                    f"    {var}={shlex.quote(val)}" + (" \\" if not is_last else "")
+                    f"    {var}=\"{val}\"" + (" \\" if not is_last else "")
                 )
         elif isinstance(directive, schema.CopyFileLiteral):
-            lines.append(f"RUN cat <<EOF > {directive.destination!s}\\")
+            lines.append(f"RUN cat <<EOF > {directive.destination!s}" + " && chmod +x {directive.destination!s}" if directive.executable else "")
             lines.append(directive.contents)
-            if directive.executable:
-                lines.append(f"EOF && chmod +x {directive.destination!s}")
-            else:
-                lines.append("EOF")
+            lines.append("EOF")
         elif isinstance(directive, schema.CopyFile):
             lines.append(f"COPY {directive.source!s} {directive.destination!s}")
         elif isinstance(directive, schema.AptGetInstall):

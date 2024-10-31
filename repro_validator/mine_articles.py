@@ -42,3 +42,17 @@ async def mine_articles(
         articles=articles,
         other_data=other_data,
     )
+
+# To do that, you need to write a script that turns DBLP results into list of bibcodes, preferably formatted according to my YAML schema (each bibcode should turn into YAML file with the bibcode as its name with 1 field; data-collection students will fill in the rest). I started writing one [here](https://github.com/uiuc-cs527-fa24/repro-validator/blob/main/repro_validator/mine_articles.py) but it is untested. We would also want a second script to:
+
+# 1. Deterministically shuffle the article list. The proceedings of a conference like ASPLOS are ordered by session; if we sample in order, we only sample the first N / M sessions rather than some from every sessions. Different sessions may have different orientations to reproducibility. The shuffle should be deterministic (seeded RNG) so we can re-run and get the same order though.
+
+# 2. Count how many articles have been "already done". Since I didn't begin with a recorded deterministic shuffle (I really should have), the "already done" articles are not necessarily the first k of the shuffled articles. They will be randomly scattered, so we should count them.
+
+# 3. Select the not-already-done articles in order, until the already-done + selected-not-already-done reaches k% (parameter).
+
+# 4. Do that ^ for every conference for every year of interest.
+
+# Shuffle the results?
+
+# The 2013 group is completely done. The 2018 group has a massive head start from MP2 and Progress 1 -- 4. However, if we mix in 2024 conferences and SE conferences from 2018 and 2024 now, we should be able to cover a good sample of them.

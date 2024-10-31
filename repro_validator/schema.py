@@ -64,6 +64,11 @@ class Article(pydantic.BaseModel):
 
     """
 
+    badges: set[Badge]
+    """What badges, if any, this article has.
+
+    """
+
 
 class NoncomputationalArticle(pydantic.BaseModel):
     type: typing.Literal["NoncomputationalArticle"]
@@ -134,6 +139,9 @@ class SourceNotFound(pydantic.BaseModel):
 
     google_searches_tried: typing.Sequence[str]
     """List of search strings (NOT URLs)"""
+
+    notes: str
+    """Any extra notes"""
 
 
 class SourceFound(pydantic.BaseModel):
@@ -247,6 +255,12 @@ class BuildAttempt(pydantic.BaseModel):
     4. Any other image
     """
 
+    # instruction_quality:
+    # """Time spent working on the build (excluding finding the main source code) in minutes."""
+
+    time_spent: int
+    """Time spent working on the build (excluding finding the main source code) in minutes."""
+
     build_directives: typing.Sequence[DockerfileDirectiveUnion]
     """A list of Docker directives"""
 
@@ -270,6 +284,9 @@ class BuildAttempt(pydantic.BaseModel):
 class BuildCrash(pydantic.BaseModel):
     type: typing.Literal["BuildCrash"]
 
+    time_spent: int
+    """Time spent working on the build (excluding finding the main source code) in minutes."""
+
     crashing_command_output: str
     """Abbreviated output of the commnad that is crashing.
 
@@ -283,16 +300,16 @@ class BuildCrash(pydantic.BaseModel):
 
     The description should include:
 
-    1. The proximal and distal cause of the crash
+    1. The proximate and ultimate causes of the crash
     2. Online sources consulted
     3. Workarounds tried
     """
 
 
 class ErrorCode(enum.Enum):
-    # TODO: Fill this in with crash reasons
-    pass
-
+    """If you don't have a specific error code in mind, use `unassigned`."""
+    missing_data = enum.auto()
+    unassigned = enum.auto()
 
 class TestFail(pydantic.BaseModel):
     type: typing.Literal["TestFail"]
@@ -311,6 +328,8 @@ class TestFail(pydantic.BaseModel):
 
 class BuildAndTestSuccess(pydantic.BaseModel):
     type: typing.Literal["BuildAndTestSuccess"]
+
+    notes: str = ""
 
 
 def is_valid_dblp_url(url: pydantic.HttpUrl) -> pydantic.HttpUrl:
@@ -334,13 +353,18 @@ vcs_schemes = ["git", "svn", "cvs", "hg"]
 class NonstandardResource(enum.Enum):
     arm_cpu = enum.auto()
     intel_cpu = enum.auto()
+    intel_sgx_cpu = enum.auto()
+    intel_vt_x = enum.auto()
     gpu = enum.auto()
+    more_than_1_hour = enum.auto()
     more_than_8gb_ram = enum.auto()
     more_than_100gb_storage = enum.auto()
     graphical_environment = enum.auto()
     remote_api = enum.auto()
-    intel_vt_x = enum.auto()
+    commercial_cloud = enum.auto()
     performance_counter_access = enum.auto()
+    manipulate_linux_kernel_modules = enum.auto()
+    manipulate_docker_containers = enum.auto()
 
 
 class DockerfileDirective(pydantic.BaseModel):
@@ -448,3 +472,23 @@ DockerfileDirectiveUnion: typing.TypeAlias = typing.Annotated[
     Run | RawRun | AptGetInstall | Env | CopyFileLiteral | CopyFile,
     pydantic.Field(json_schema_extra={"descriminator": "type"}),
 ]
+
+
+class Badge(enum.Enum):
+    """Badges defined on these pages:
+
+    - <https://www.acm.org/publications/policies/artifact-review-and-badging-current>
+    - <https://www.acm.org/publications/policies/artifact-review-badging>
+    """
+
+    artifacts_evaluated_functional_v1_1 = enum.auto()
+    artifacts_evaluated_reusable_v1_1 = enum.auto()
+    artifacts_available_v1_1 = enum.auto()
+    results_reproduced_v1_1 = enum.auto()
+    results_replicated_v1_1 = enum.auto()
+
+    artifacts_evaluated_functional = enum.auto()
+    artifacts_evaluated_reusable = enum.auto()
+    artifacts_available = enum.auto()
+    results_reproduced = enum.auto()
+    results_replicated = enum.auto()

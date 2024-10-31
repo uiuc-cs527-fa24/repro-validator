@@ -1,3 +1,5 @@
+.direnv/
+.venv/
 github_pat
 result
 result1

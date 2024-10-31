@@ -1,3 +1,4 @@
+import shlex
 import subprocess
 import pydantic_core
 import collections
@@ -173,8 +174,7 @@ async def test_valid_article_yaml(
     )
 
 
-def test_dockerfile_build(
-) -> None:
+def test_dockerfile_build() -> None:
     article_yaml = pathlib.Path("test_cases/valid.yaml")
     article_yaml_text = article_yaml.read_text()
     article_dict = yaml.safe_load(article_yaml_text)
@@ -192,9 +192,23 @@ def test_dockerfile_build(
         ],
     )
     subprocess.run(
-        ["podman", "build", result],
+        ["podman", "build", result.parent],
         check=True,
     )
+
+
+def test_venv_installation() -> None:
+    subprocess.run(["rm", "--recursive", "--force", ".venv"], check=True)
+    subprocess.run(["python", "-m", "venv", ".venv"], check=True)
+    subprocess.run([
+        "bash",
+        "-c",
+        " && ".join([
+            shlex.join(["source", ".venv/bin/activate"]),
+            shlex.join(["pip", "install", "."]),
+            shlex.join(["repro-validator", "--help"]),
+        ]),
+    ], check=True)
 
 
 _T = typing.TypeVar("_T")

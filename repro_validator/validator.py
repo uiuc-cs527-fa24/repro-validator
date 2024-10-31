@@ -267,7 +267,7 @@ async def validate_breakable_link(
         elif (
             breakable_link.latest_alive_on is None
             or breakable_link.latest_alive_on
-            <= datetime.datetime.now().astimezone() - datetime.timedelta(days=10)
+            <= datetime.datetime.now().astimezone() - datetime.timedelta(days=30)
         ):
             yield (
                 Level.possible_error,
