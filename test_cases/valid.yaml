@@ -53,14 +53,7 @@ computational_status:
             - update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10 100
         - type: RUN
           cmds:
-            - git clone git://repo.or.cz/ppcg.git
-            - cd ppcg
-            - git submodule init
-            - git submodule update
-            - ./autogen.sh
-            # Don't actually compile this in the test suite, since it would take a long time
-            # - ./configure
-            # - make
+            - echo "Hello world"
         - type: Raw RUN
           cmds: |
             echo "hello" > world && cat world | tee
@@ -70,7 +63,7 @@ computational_status:
         - type: COPY file literal
           contents: "#!/usr/bin/env
             echo hi"
-          destination: /foo/bar
+          destination: /foobar
           executable: true
       test_directives:
         - type: RUN

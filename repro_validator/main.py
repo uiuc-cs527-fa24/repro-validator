@@ -102,10 +102,11 @@ def export_dockerfile(
             *article.computational_status.source_search.build_attempt.test_directives,
         ],
     )
-    uid = int(os.environ["UID"]) if "UID" in os.environ else -1
-    gid = int(os.environ["GID"]) if "GID" in os.environ else -1
-    os.chown(result.parent, uid, gid)
-    os.chown(result, uid, gid)
+    if os.environ.get("CHOWN"):
+        uid = int(os.environ["UID"]) if "UID" in os.environ else -1
+        gid = int(os.environ["GID"]) if "GID" in os.environ else -1
+        os.chown(result.parent, uid, gid)
+        os.chown(result, uid, gid)
     console.print(f"[green]{result!s}")
     if not build:
         console.print(f"[green]Run:\n\n  docker build {result.parent!s}\n")
