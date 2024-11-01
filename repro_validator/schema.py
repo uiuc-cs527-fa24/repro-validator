@@ -65,9 +65,7 @@ class Article(pydantic.BaseModel):
     """
 
     badges: set[Badge] | None = None
-    """What badges, if any, this article has.
-
-    """
+    """What badges, if any, this article has."""
 
 
 class NoncomputationalArticle(pydantic.BaseModel):
@@ -181,8 +179,30 @@ class SourceFound(pydantic.BaseModel):
     This should usually be empty.
     """
 
+    reproducibility_documentation_level: DocumentationLevel
+
     build_attempt: BuildAttempt | None = None
     """Build attempt, if any was made"""
+
+
+class DocumentationLevel(enum.StrEnum):
+    """Choose the first applicable level, in order."""
+
+    specifies_every_command = enum.auto()
+    """The documentation specifies every or almost every command you had to run to get this artifact to build.
+
+    Small exceptions are allowed if they are obvious or system-specific, e.g., `cd /code`, `apt-get update`.
+
+    """
+
+    specifies_some_commands = enum.auto()
+    """The documentation specifies some of the commands you had to run to get this artifact to build."""
+
+    specifies_english = enum.auto()
+    """The documentation does not specify any commands, but has plain English description of the required steps."""
+
+    no_documentation = enum.auto()
+    """There is no reproducibility documentation at all."""
 
 
 class BreakableLink(pydantic.BaseModel):
@@ -306,7 +326,7 @@ class BuildCrash(pydantic.BaseModel):
     """
 
 
-class ErrorCode(enum.Enum):
+class ErrorCode(enum.StrEnum):
     """If you don't have a specific error code in mind, use `unassigned`."""
 
     missing_data = enum.auto()
@@ -352,7 +372,7 @@ def is_valid_dblp_url(url: pydantic.HttpUrl) -> pydantic.HttpUrl:
 vcs_schemes = ["git", "svn", "cvs", "hg"]
 
 
-class NonstandardResource(enum.Enum):
+class NonstandardResource(enum.StrEnum):
     arm_cpu = enum.auto()
     intel_cpu = enum.auto()
     intel_sgx_cpu = enum.auto()
@@ -476,7 +496,7 @@ DockerfileDirectiveUnion: typing.TypeAlias = typing.Annotated[
 ]
 
 
-class Badge(enum.Enum):
+class Badge(enum.StrEnum):
     """Badges defined on these pages:
 
     - <https://www.acm.org/publications/policies/artifact-review-and-badging-current>

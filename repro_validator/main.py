@@ -29,6 +29,7 @@ ssl = libssl.create_default_context(cafile=certifi.where())
 def validate(
     path: Annotated[pathlib.Path, typer.Argument(help="Path to $bibcode.yaml")],
     use_archive_org: bool = False,
+    offline: bool = False,
 ) -> None:
     rich.traceback.install(show_locals=False)
 
@@ -38,7 +39,7 @@ def validate(
         ) as session:
             has_errors = False
             async for level, message in validator.validate_article_yaml(
-                path, session, use_archive_org
+                    path, session, use_archive_org, offline
             ):
                 if level == validator.Level.fatal_error:
                     console.print(f"[red]Fatal error: {rich.markup.escape(message)}")
@@ -54,6 +55,8 @@ def validate(
 
     if not asyncio.run(async_validatation_successful()):
         raise typer.Exit(code=1)
+    else:
+        console.print(f"[green]All good {path!s}")
 
 
 @app.command()

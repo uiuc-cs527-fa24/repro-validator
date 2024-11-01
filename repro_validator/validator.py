@@ -20,6 +20,7 @@ async def validate_article_yaml(
     article_yaml: pathlib.Path,
     aiohttp_client: aiohttp.ClientSession,
     use_archive_org: bool,
+    offline: bool,
 ) -> typing.AsyncIterator[tuple[Level, str]]:
     if not article_yaml.exists():
         yield (Level.fatal_error, f"{article_yaml!s} does not exist.")
@@ -44,6 +45,7 @@ async def validate_article_yaml(
         article_yaml.parent,
         article,
         use_archive_org,
+        offline,
     ):
         yield error
 
@@ -53,12 +55,13 @@ async def validate_article(
     base_path: pathlib.Path,
     article: schema.Article,
     use_archive_org: bool,
+    offline: bool,
 ) -> typing.AsyncIterator[tuple[Level, str]]:
     # dblp_key is filled, the first result should be the DBLP metadata in Turtle format
     dblp_request = util.url_bytes(
         aiohttp_client,
         util.pydantic_to_yarl(article.dblp_url).with_suffix(".ttl"),
-    )
+    ) if not offline else None
 
     if article.badges is None:
         yield (
@@ -74,6 +77,7 @@ async def validate_article(
                 aiohttp_client,
                 article.computational_status.source_link_used_by_cp16,
                 use_archive_org,
+                offline,
             )
             if isinstance(article.computational_status, schema.ComputationalArticle)
             and article.computational_status.source_link_used_by_cp16
@@ -96,6 +100,7 @@ async def validate_article(
                 aiohttp_client,
                 source.path,
                 use_archive_org=use_archive_org,
+                offline=offline,
             )
 
             if source.build_attempt is not None:
@@ -222,6 +227,7 @@ async def validate_breakable_link(
     aiohttp_client: aiohttp.ClientSession,
     breakable_link: schema.BreakableLink,
     use_archive_org: bool,
+    offline: bool,
 ) -> typing.AsyncIterator[tuple[Level, str]]:
     host = breakable_link.url.host or ""
     if host in {"www.google.com", "web.archive.org"}:
@@ -240,7 +246,7 @@ async def validate_breakable_link(
     link_request = util.url_status(
         aiohttp_client,
         util.pydantic_to_yarl(breakable_link.url),
-    )
+    ) if not offline else None
 
     order = []
     if breakable_link.born_after:
@@ -258,39 +264,42 @@ async def validate_breakable_link(
             f"Dates are in the wrong order for {breakable_link.url!s}; should be born_after < earliest_alive_on < latest_alive_on < dead_on < now()",
         )
 
-    url, status, _ = await link_request
-    if status != 200 and not breakable_link.dead_on:
-        yield (
-            Level.error,
-            f"{breakable_link.url!s} is dead; dead_on should be set to whenever you first noticed this (today?)",
-        )
-    elif status == 200:
-        if breakable_link.dead_on:
+    if link_request:
+        url, status, _ = await link_request
+        if status != 200 and not breakable_link.dead_on:
             yield (
-                Level.possible_error,
-                f"{breakable_link.url!s} seems to resolve, so maybe it is not dead. If the link resolves, but the intended content is not there, ignore this.",
+                Level.error,
+                f"{breakable_link.url!s} is dead; dead_on should be set to whenever you first noticed this (today?)",
             )
-        elif (
-            breakable_link.latest_alive_on is None
-            or breakable_link.latest_alive_on
-            <= datetime.datetime.now().astimezone() - datetime.timedelta(days=30)
-        ):
-            yield (
-                Level.possible_error,
-                f"{breakable_link.url!s} seems to resolve, so latest_alive_on should probably be today.",
-            )
+        elif status == 200:
+            if breakable_link.dead_on:
+                yield (
+                    Level.possible_error,
+                    f"{breakable_link.url!s} seems to resolve, so maybe it is not dead. If the link resolves, but the intended content is not there, ignore this.",
+                )
+            elif (
+                breakable_link.latest_alive_on is None
+                or breakable_link.latest_alive_on
+                <= datetime.datetime.now().astimezone() - datetime.timedelta(days=30)
+            ):
+                yield (
+                    Level.possible_error,
+                    f"{breakable_link.url!s} seems to resolve, so latest_alive_on should probably be today.",
+                )
 
 
 async def validate_link_path(
     aiohttp_client: aiohttp.ClientSession,
     link_path: schema.LinkPath,
     use_archive_org: bool,
+    offline: bool,
 ) -> typing.AsyncIterator[tuple[Level, str]]:
     breakable_link_validations = [
         validate_breakable_link(
             aiohttp_client,
             link,
             use_archive_org=use_archive_org,
+            offline=offline,
         )
         for link in link_path.links
     ]
@@ -298,7 +307,7 @@ async def validate_link_path(
         util.url_bytes(
             aiohttp_client,
             util.pydantic_to_yarl(link.url),
-        )
+        ) if not offline else None
         for link in link_path.links[:-1]
     ]
     for link0, link0_results, link1 in zip(
@@ -306,27 +315,28 @@ async def validate_link_path(
     ):
         link1_host = (link1.url.host or "").lower().encode()
         link1_path = (link1.url.path or "").lower().encode()
-        _, link0_status, link0_url, link0_page = await link0_results
-        if link1_host == b"web.archive.org":
-            archived_url = link1_path.split(b"/")[2]
-            if archived_url != str(link0.url).encode():
-                yield (
-                    Level.error,
-                    f"{link1.url!s} is an archive URL, but it does not look like an archived version of {link0.url!s}",
-                )
-        elif link0_status != 200:
-            yield (
-                Level.error,
-                f"Link {link0.url!s} does not resolve ({link0_status}) and the next link is NOT web.archive.org",
-            )
-            continue
-        else:
-            link0_page = link0_page.lower()
-            if link1_host not in link0_page or link1_path not in link0_page:
+        if link0_results:
+            _, link0_status, link0_url, link0_page = await link0_results
+            if link1_host == b"web.archive.org":
+                archived_url = link1_path.split(b"/")[2]
+                if archived_url != str(link0.url).encode():
+                    yield (
+                        Level.error,
+                        f"{link1.url!s} is an archive URL, but it does not look like an archived version of {link0.url!s}",
+                    )
+            elif link0_status != 200:
                 yield (
                     Level.possible_error,
-                    f"I don't see where {link0.url!s} links to {link1.url!s}. If the link really is there, ignore this message.",
+                    f"Link {link0.url!s} does not resolve ({link0_status}) and the next link is NOT web.archive.org. If I am wrong about whether the link resolves (if it resolves for you in browser), please ignore.",
                 )
+                continue
+            else:
+                link0_page = link0_page.lower()
+                if link1_host not in link0_page or link1_path not in link0_page:
+                    yield (
+                        Level.possible_error,
+                        f"I don't see where {link0.url!s} links to {link1.url!s}. If the link really is there, ignore this message.",
+                    )
 
     first_url_host = link_path.links[0].url.host or ""
     if (first_url_host or "").lower() not in {"doi.org", "www.google.com"}:

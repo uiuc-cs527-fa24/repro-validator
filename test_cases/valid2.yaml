@@ -14,10 +14,11 @@ computational_status:
     type: SourceFound
     path:
       links:
-        - url: https://dl.acm.org/doi/10.1145/3158153
+        - url: https://doi.org/10.1145/3158153
         - url: https://dl.acm.org/doi/pdf/10.1145/3158153
         - url: https://github.com/FStarLang/FStar/releases/tag/v0.9.5.0
     is_source_versioned: yes
+    reproducibility_documentation_level: specifies_some_commands
     build_attempt:
       time_spent: 60
       base_image:

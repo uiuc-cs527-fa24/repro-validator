@@ -18,6 +18,8 @@ computational_status:
     - Results
   source_search:
     type: SourceFound
+    badges:
+      - artifacts_evaluated_functional_v1_1
     path:
       links:
         - url: https://www.google.com/search?hl=en&q=ppcg%20compiler
@@ -26,6 +28,7 @@ computational_status:
         - url: https://repo.or.cz/ppcg.git
           latest_alive_on: 2024-10-14 14:27-05:00
     is_source_versioned: yes
+    reproducibility_documentation_level: specifies_every_command
     build_attempt:
       time_spent: 60
       base_image:

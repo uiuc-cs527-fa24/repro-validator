@@ -134,6 +134,10 @@ Note: there is no equivalent of `WORKDIR`. Simply `cd` at the beginning of your 
 
 ## Changelog
 
+### 0.2.12
+
+- Added DocumentationLevel
+
 ### 0.2.11
 
 - Added `CHOWN` env var.
