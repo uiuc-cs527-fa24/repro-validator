@@ -33,7 +33,7 @@ def validate(
 ) -> None:
     rich.traceback.install(show_locals=False)
 
-    async def async_validatation_successful() -> bool:
+    async def async_validation_successful() -> bool:
         async with aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(ssl=ssl)
         ) as session:
@@ -53,7 +53,7 @@ def validate(
                     )
             return not has_errors
 
-    if not asyncio.run(async_validatation_successful()):
+    if not asyncio.run(async_validation_successful()):
         raise typer.Exit(code=1)
     else:
         console.print(f"[green]All good {path!s}")

@@ -46,7 +46,7 @@ async def url_bytes(
             async for chunk in resp.content.iter_chunked(1024):
                 content.extend(chunk)
                 # progress.update(progress_task, advance=len(chunk))
-                if len(content_length) % (1024 * 10) == 0:
+                if len(content) % (1024 * 10) == 0:
                     console.print("[gray]Downloaded", len(content), "of", content_length)
             return url, resp.status, resp.url, content
     except asyncio.TimeoutError:
