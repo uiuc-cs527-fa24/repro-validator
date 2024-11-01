@@ -13,11 +13,11 @@ repro-validator validate bibcode.yaml
 If you don't have Python 3.12, try using Nix (from source) or Docker (binary).
 
 ``` sh
-nix run github:uiuc-cs527-fa24/repro-validator/0.2.11 -- validate bibcode.yaml
+nix run github:uiuc-cs527-fa24/repro-validator/0.2.12 -- validate bibcode.yaml
 
 # or
 
-docker run --rm -t -e TERM=$TERM -e CHOWN=1 -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.11 validate bibcode.yaml
+docker run --rm -t -e TERM=$TERM -e CHOWN=1 -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.12 validate bibcode.yaml
 ```
 
 Whichever method, you have the following subcommands:
