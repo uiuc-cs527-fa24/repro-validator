@@ -58,10 +58,14 @@ async def validate_article(
     offline: bool,
 ) -> typing.AsyncIterator[tuple[Level, str]]:
     # dblp_key is filled, the first result should be the DBLP metadata in Turtle format
-    dblp_request = util.url_bytes(
-        aiohttp_client,
-        util.pydantic_to_yarl(article.dblp_url).with_suffix(".ttl"),
-    ) if not offline else None
+    dblp_request = (
+        util.url_bytes(
+            aiohttp_client,
+            util.pydantic_to_yarl(article.dblp_url).with_suffix(".ttl"),
+        )
+        if not offline
+        else None
+    )
 
     if article.badges is None:
         yield (
@@ -243,10 +247,14 @@ async def validate_breakable_link(
             )
         return
 
-    link_request = util.url_status(
-        aiohttp_client,
-        util.pydantic_to_yarl(breakable_link.url),
-    ) if not offline else None
+    link_request = (
+        util.url_status(
+            aiohttp_client,
+            util.pydantic_to_yarl(breakable_link.url),
+        )
+        if not offline
+        else None
+    )
 
     order = []
     if breakable_link.born_after:
@@ -307,7 +315,9 @@ async def validate_link_path(
         util.url_bytes(
             aiohttp_client,
             util.pydantic_to_yarl(link.url),
-        ) if not offline else None
+        )
+        if not offline
+        else None
         for link in link_path.links[:-1]
     ]
     for link0, link0_results, link1 in zip(

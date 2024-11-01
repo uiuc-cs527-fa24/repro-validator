@@ -26,7 +26,9 @@ async def url_status(
 ) -> tuple[yarl.URL, int, yarl.URL]:
     console.print(f"[gray]HEAD {url!s}")
     try:
-        async with aiohttp_client.head(url, allow_redirects=True, max_redirects=max_redirects, timeout=timeout) as resp:
+        async with aiohttp_client.head(
+            url, allow_redirects=True, max_redirects=max_redirects, timeout=timeout
+        ) as resp:
             console.print("[gray]done")
             return url, resp.status, resp.url
     except asyncio.TimeoutError:
@@ -39,7 +41,9 @@ async def url_bytes(
 ) -> tuple[yarl.URL, int, yarl.URL, bytes]:
     console.print(f"[gray]GET {url!s}")
     try:
-        async with aiohttp_client.get(url, allow_redirects=True, max_redirects=max_redirects, timeout=timeout) as resp:
+        async with aiohttp_client.get(
+            url, allow_redirects=True, max_redirects=max_redirects, timeout=timeout
+        ) as resp:
             content_length = int(resp.headers.get("Content-Length", 0))
             # progress_task = progress.add_task("Downloading...", total=content_length)
             content = bytearray()
@@ -47,7 +51,9 @@ async def url_bytes(
                 content.extend(chunk)
                 # progress.update(progress_task, advance=len(chunk))
                 if len(content) % (1024 * 10) == 0:
-                    console.print("[gray]Downloaded", len(content), "of", content_length)
+                    console.print(
+                        "[gray]Downloaded", len(content), "of", content_length
+                    )
             return url, resp.status, resp.url, content
     except asyncio.TimeoutError:
         return url, 400, url, b""

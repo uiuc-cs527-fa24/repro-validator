@@ -39,7 +39,7 @@ def validate(
         ) as session:
             has_errors = False
             async for level, message in validator.validate_article_yaml(
-                    path, session, use_archive_org, offline
+                path, session, use_archive_org, offline
             ):
                 if level == validator.Level.fatal_error:
                     console.print(f"[red]Fatal error: {rich.markup.escape(message)}")
