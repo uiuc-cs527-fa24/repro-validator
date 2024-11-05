@@ -15,7 +15,25 @@ class ArticleGroup(pydantic.BaseModel):
     Articles, sorted, and shuffled with seed 0.
     """
 
-    other_data: typing.Mapping[str, str]
+    date: pydantic.AwareDatetime
+
+    venue: str
+
+    venue_type: VenueType
+
+    area: list[CSArea]
+
+
+class VenueType(enum.StrEnum):
+    conference = enum.auto()
+    journal = enum.auto()
+
+
+class CSArea(enum.StrEnum):
+    computer_architecture = enum.auto()
+    programming_languages = enum.auto()
+    operating_systems = enum.auto()
+    computer_security = enum.auto()
 
 
 class Unknown(pydantic.BaseModel):
@@ -23,6 +41,11 @@ class Unknown(pydantic.BaseModel):
 
 
 class Article(pydantic.BaseModel):
+    version: str = "0.2.11"
+    """Version of the schema validator this article uses.
+
+    If omitted, we will fall back to the first version available."""
+
     dblp_url: typing.Annotated[
         pydantic.HttpUrl, pydantic.AfterValidator(is_valid_dblp_url)
     ]

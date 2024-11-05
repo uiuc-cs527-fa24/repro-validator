@@ -1,15 +1,15 @@
 #!/usr/bin/env python
+import pandas
 import pydantic
 from typing_extensions import Annotated
+import typing
 import asyncio
 import subprocess
 import os
 import pathlib
-import json
 import yaml
 import rich.console
 import rich.traceback
-import yarl
 import aiohttp
 import typer
 import ssl as libssl
@@ -119,21 +119,51 @@ def export_dockerfile(
         )
 
 
+@app.command()
 def mine_articles(
-    toc_page: str,
+    article_groups_dir: pathlib.Path,
+    completed_bibcodes: pathlib.Path,
     destination: pathlib.Path,
-    other_data: str = "{}",
+    seed: int = 0,
 ) -> None:
     async def mine_articles_async() -> None:
-        async with aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=ssl)
-        ) as aiohttp_client:
-            article_group = await mine_articles_mod.mine_articles(
-                aiohttp_client,
-                yarl.URL(toc_page),
-                json.loads(other_data),
-            )
-            destination.write_text(yaml.dump(article_group.dict()))
+        completed_articles = frozenset(pandas.read_csv(
+            completed_bibcodes,
+        )["Bibcode"])
+        with rich.progress.Progress() as progress:
+            async with aiohttp.ClientSession(
+                connector=aiohttp.TCPConnector(ssl=ssl)
+            ) as aiohttp_client:
+                article_group_paths = list(article_groups_dir.iterdir())
+                article_group_reqs = progress.track(
+                    asyncio.as_completed([
+                        mine_articles_mod.mine_articles(
+                            aiohttp_client,
+                            article_group_path,
+                            seed,
+                        )
+                        for article_group_path in article_group_paths
+                    ]),
+                    total=len(article_group_paths)
+                )
+                article_groups = []
+                for article_group_req in article_group_reqs:
+                    article_group = await article_group_req
+                    completed, incomplete = mine_articles_mod.separate_in_completed_articles(article_group, completed_articles)
+                    article_groups.append((article_group, completed, incomplete))
+
+        prioritized_articles = mine_articles_mod.prioritize_articles(article_groups)
+        pandas.DataFrame.from_records([
+            {
+                "URL": str(article.dblp_url),
+                "Netid": "",
+                "Type": "3",
+                "level": level,
+            }
+            for level, series in prioritized_articles
+            for article_group, articles in series
+            for article in articles
+        ]).to_csv(destination, index=False)
 
     asyncio.run(mine_articles_async())
 

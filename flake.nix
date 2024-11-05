@@ -23,6 +23,7 @@
           pypkgs.pytest-vcr
           pypkgs.mypy
           pypkgs.types-pyyaml
+          pypkgs.pandas
         ];
         version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;
       in {

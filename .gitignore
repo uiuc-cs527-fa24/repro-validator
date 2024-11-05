@@ -1,3 +1,5 @@
+article_groups/
+queue.csv
 .direnv/
 .venv/
 github_pat

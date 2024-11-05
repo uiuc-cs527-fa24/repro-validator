@@ -1,3 +1,6 @@
+import hashlib
+import typing
+import random
 import asyncio
 import aiohttp
 import rich.console
@@ -57,3 +60,32 @@ async def url_bytes(
             return url, resp.status, resp.url, content
     except asyncio.TimeoutError:
         return url, 400, url, b""
+
+
+_T = typing.TypeVar("_T")
+
+
+def deterministic_shuffle(seed: int, lst: typing.Iterable[_T]) -> list[_T]:
+    rng = random.Random(seed)
+    ret = list(lst)
+    rng.shuffle(ret)
+    return ret
+
+
+def deterministic_stable_shuffle(
+        seed: int,
+        lst: typing.Iterable[_T],
+        key: typing.Callable[[_T], bytes],
+) -> list[_T]:
+    """Stable shuffle is a shuffle where inserting/removing one element does not disturb the ordering of the others in the shuffled result."""
+    rng = random.Random(seed)
+    hash_modifier = int.from_bytes(rng.randbytes(hashlib.sha1().digest_size))
+    ret = [
+        (int.from_bytes(hashlib.sha1(key(elem)).digest()) ^ hash_modifier, elem)
+        for elem in lst
+    ]
+    return [key for _, key in sorted(ret)]
+
+
+async def async_id(elem: _T) -> _T:
+    return elem

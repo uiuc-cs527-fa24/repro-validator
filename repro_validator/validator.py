@@ -1,3 +1,4 @@
+import importlib.metadata
 import enum
 import rdflib
 import typing
@@ -72,6 +73,10 @@ async def validate_article(
             Level.error,
             "Please fill badges with a list of ACM badges the article earned or empty-list",
         )
+
+    version = importlib.metadata.version("repro_validator")
+    if article.version == version:
+        yield (Level.error, f"Please write `version: {version!r}` in article")
 
     if isinstance(article.computational_status, schema.Unknown):
         yield (Level.error, "computational_status should be filled")
