@@ -439,6 +439,7 @@ class NonstandardResource(enum.StrEnum):
     intel_sgx_cpu = enum.auto()
     intel_vt_x = enum.auto()
     gpu = enum.auto()
+    fpga = enum.auto()
     more_than_1_hour = enum.auto()
     more_than_8gb_ram = enum.auto()
     more_than_100gb_storage = enum.auto()
