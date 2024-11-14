@@ -30,6 +30,8 @@ Whichever method, you have the following subcommands:
   export-dockerfile bibcode.yaml
   ```
 
+If this fails due to SSL error (should not, but just in case), you can pass `--offline` after `validate`, and the validator will skip URL checks.
+
 ## About the new schema
 
 For any confusion, consult [`schema.py`](./schema.py), which has as [Pydantic schema](https://pydantic.dev/) and _lots_ of doc-strings comments. If you have trouble reading or understanding it, please consult me. There is an example of correct and incorrect Articles [here](./test_cases).
