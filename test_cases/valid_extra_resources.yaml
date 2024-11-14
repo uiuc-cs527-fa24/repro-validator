@@ -1,0 +1,42 @@
+dblp_url: https://dblp.org/rec/journals/taco/VerdoolaegeJCGTC13
+badges: []
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: http://freecode.com/projects/ppcg
+    born_after:
+    earliest_alive_on: 2013-08-01 01:23+00:00
+    latest_alive_on: 2022-03-20 12:17+00:00
+    dead_on: 2024-09-21 10:04-05:00
+    description: URL resolves, but no longer hosts ppcg project
+  tool_names:
+    - ppcg
+  innermost_computational_section_headings:
+    - A Bird’s Eye View of PPCG
+    - Comparison
+    - Methodology
+    - Results
+  source_search:
+    type: SourceFound
+    extra_resources:
+      - graphical_environment
+    badges:
+      - artifacts_evaluated_functional_v1_1
+    path:
+      links:
+        - url: https://www.google.com/search?hl=en&q=ppcg%20compiler
+        - url: https://github.com/Meinersbur/ppcg
+          latest_alive_on: 2024-10-14 14:27-05:00
+        - url: https://repo.or.cz/ppcg.git
+          latest_alive_on: 2024-10-14 14:27-05:00
+    is_source_versioned: yes
+    reproducibility_documentation_level: specifies_every_command
+    build_attempt:
+      time_spent: 600
+      base_image:
+        name: ubuntu
+        tag: "18.04"
+      build_directives: []
+      test_directives: []
+      result:
+        type: BuildCrash
