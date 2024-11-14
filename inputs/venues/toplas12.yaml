@@ -1,0 +1,11 @@
+area:
+- programming_languages
+- operating_systems
+articles: []
+date: '2012-05-04T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/toplas/toplas34
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/toplas/Palsberg12
+venue: TOPLAS
+venue_type: journal

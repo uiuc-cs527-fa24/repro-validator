@@ -1,0 +1,22 @@
+area:
+- databases
+articles: []
+date: '2012-08-27T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/pvldb/pvldb5
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/pvldb/Jagadish11a
+    - https://dblp.org/rec/journals/pvldb/Ozsoyoglu11
+    - https://dblp.org/rec/journals/pvldb/Cetintemel11
+    - https://dblp.org/rec/journals/pvldb/Dalvi11
+    - https://dblp.org/rec/journals/pvldb/Korth12
+    - https://dblp.org/rec/journals/pvldb/Tung12
+    - https://dblp.org/rec/journals/pvldb/AlonsoF12
+    - https://dblp.org/rec/journals/pvldb/CetintemelD12
+    - https://dblp.org/rec/journals/pvldb/KorthT12
+    - https://dblp.org/rec/journals/pvldb/SacanT12
+    - https://dblp.org/rec/journals/pvldb/Ozsoyoglu12
+    - https://dblp.org/rec/journals/pvldb/YaziciL12
+    - https://dblp.org/rec/journals/pvldb/Ozsoyoglu12a
+venue: (P)VLDB
+venue_type: journal

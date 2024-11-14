@@ -1,0 +1,10 @@
+area:
+- programming_languages
+articles: []
+date: '2017-12-27T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/pacmpl/pacmpl2
+venue: OOPSLA
+venue_type: conference
+extras:
+  include_sessions:
+    - Volume 2, Number OOPSLA, November 2018

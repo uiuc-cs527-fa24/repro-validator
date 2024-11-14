@@ -23,7 +23,13 @@
           pypkgs.pytest-vcr
           pypkgs.mypy
           pypkgs.types-pyyaml
-          pypkgs.pandas
+          pypkgs.polars
+          pypkgs.lxml
+          pypkgs.lxml-stubs
+          pypkgs.snakemake
+          pypkgs.dominate
+          pypkgs.tabulate
+          pypkgs.icecream
         ];
         version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;
       in {

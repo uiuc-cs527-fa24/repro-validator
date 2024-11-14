@@ -8,7 +8,10 @@ import pathlib
 
 
 class ArticleGroup(pydantic.BaseModel):
-    dblp_search: pydantic.HttpUrl
+    dblp_search: typing.Annotated[
+        pydantic.HttpUrl,
+        pydantic.AfterValidator(url_constraints("https", "dblp.org", "/db/", "")),
+    ]
 
     articles: typing.Sequence[Article]
     """
@@ -23,6 +26,8 @@ class ArticleGroup(pydantic.BaseModel):
 
     area: list[CSArea]
 
+    extras: typing.Mapping[str, typing.Any] = {}
+
 
 class VenueType(enum.StrEnum):
     conference = enum.auto()
@@ -34,6 +39,7 @@ class CSArea(enum.StrEnum):
     programming_languages = enum.auto()
     operating_systems = enum.auto()
     computer_security = enum.auto()
+    databases = enum.auto()
 
 
 class Unknown(pydantic.BaseModel):
@@ -47,7 +53,13 @@ class Article(pydantic.BaseModel):
     If omitted, we will fall back to the first version available."""
 
     dblp_url: typing.Annotated[
-        pydantic.HttpUrl, pydantic.AfterValidator(is_valid_dblp_url)
+        pydantic.HttpUrl,
+        pydantic.AfterValidator(url_constraints(
+            "https",
+            "dblp.org",
+            "/rec/",
+            "",
+        ))
     ]
     """DBLP key in https://dblp.org
 
@@ -67,6 +79,15 @@ class Article(pydantic.BaseModel):
     But there are some exceptions (VLDB -> "pvldb", etc.)
 
     """
+
+    doi_url: typing.Annotated[
+        pydantic.HttpUrl,
+        pydantic.AfterValidator(url_constraints("https", "doi.org", "/", None)),
+    ] | None = None
+
+    other_article_urls: typing.Sequence[pydantic.HttpUrl] | None = None
+
+    authors: typing.Sequence[Author] = ()
 
     computational_status: typing.Annotated[
         ComputationalArticle | NoncomputationalArticle | Unknown,
@@ -89,6 +110,18 @@ class Article(pydantic.BaseModel):
 
     badges: set[Badge] | None = None
     """What badges, if any, this article has."""
+
+
+class Author(pydantic.BaseModel):
+    name: str
+    dblp_pid_url: typing.Annotated[
+        pydantic.HttpUrl,
+        pydantic.AfterValidator(url_constraints("https", "dblp.org", "/pid/", "")),
+    ]
+    orcid_url: typing.Annotated[
+        pydantic.HttpUrl,
+        pydantic.AfterValidator(url_constraints("https", "orcid.org", "/", "")),
+    ] | None = None
 
 
 class NoncomputationalArticle(pydantic.BaseModel):
@@ -174,7 +207,7 @@ class SourceFound(pydantic.BaseModel):
     Make sure to keep track of the links you are clicking and record the entire
     path. In particular,
 
-      - The first link should be the article DOI or a Google search.
+      - The first link should be the article DOI, Google search, or Usenix.org.
 
       - The intermediate links should be links found in the prior element's HTML
         or PDF. OR the link switches to/from archive.org version.
@@ -354,6 +387,7 @@ class ErrorCode(enum.StrEnum):
 
     missing_data = enum.auto()
     unassigned = enum.auto()
+    unresolvable_compile_error = enum.auto()
 
 
 class TestFail(pydantic.BaseModel):
@@ -377,19 +411,23 @@ class BuildAndTestSuccess(pydantic.BaseModel):
     notes: str = ""
 
 
-def is_valid_dblp_url(url: pydantic.HttpUrl) -> pydantic.HttpUrl:
-    if (
-        url.scheme == "https"
-        and url.host == "dblp.org"
-        and url.path
-        and url.path.startswith("/rec/")
-        and "." not in url.path
-    ):
-        return url
-    else:
-        raise ValueError(
-            f"{url} does not smell like a DBLP key, e.g. 'https://dblp.org/rec/journals/tissec/GiladH12'"
-        )
+def url_constraints(
+        scheme: str,
+        host: str,
+        path_prefix: str,
+        extension: str | None,
+) -> typing.Callable[[pydantic.HttpUrl], pydantic.HttpUrl]:
+    def verifier(url: pydantic.HttpUrl) -> pydantic.HttpUrl:
+        if (
+                url.scheme == scheme
+                and url.host == host
+                and (url.path or "").startswith(path_prefix)
+                and extension is None or (url.path or "").split("/")[-1].partition(".")[2] == extension
+        ):
+            return url
+        else:
+            raise ValueError(f"Invalid url {url}; should be {scheme}://{host}{path_prefix}{'.' + extension if extension else ''}")
+    return verifier
 
 
 vcs_schemes = ["git", "svn", "cvs", "hg"]

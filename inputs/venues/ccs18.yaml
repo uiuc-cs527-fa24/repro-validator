@@ -1,0 +1,15 @@
+area:
+- computer_security
+articles: []
+date: '2018-10-15T00:00:00Z'
+dblp_search: https://dblp.org/db/conf/ccs/ccs2018
+venue: CCS
+venue_type: conference
+extras:
+  exclude_sessions:
+    - Keynote
+    - Tutorials
+    - Workshop Summaries
+    - Panel
+    - Demonstrations
+    - Poster Presentations

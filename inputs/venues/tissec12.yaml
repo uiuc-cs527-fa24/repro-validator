@@ -1,0 +1,12 @@
+area:
+- computer_security
+articles: []
+date: '2012-03-01T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/tissec/tissec15
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/tissec/SyversonJ12
+  exclude_sessions:
+    - Volume 15, Number 4, April 2013
+venue: TOPS/TISSEC
+venue_type: journal

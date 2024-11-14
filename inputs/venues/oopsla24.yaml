@@ -1,0 +1,10 @@
+area:
+- programming_languages
+articles: []
+date: '2024-01-05T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/pacmpl/pacmpl8
+venue: OOPSLA
+venue_type: conference
+extras:
+  include_sessions:
+    - Volume 8, Number OOPSLA1, 2024

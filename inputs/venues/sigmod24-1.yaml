@@ -1,0 +1,14 @@
+area:
+- databases
+articles: []
+date: '2024-06-10T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/pacmmod/pacmmod2
+extras:
+  include_sessions:
+    - Volume 2, Number 3, June 2024
+    - Volume 2, Number 4, September 2024
+  exclude_articles:
+    - https://dblp.org/rec/journals/pacmmod/AgrawalM024
+    - https://dblp.org/rec/journals/pacmmod/AgrawalAH24
+venue: SIGMOD
+venue_type: conference

@@ -1,0 +1,15 @@
+area:
+- databases
+articles: []
+date: '2012-05-20T00:00:00Z'
+dblp_search: https://dblp.org/db/conf/sigmod/sigmod2012
+venue: SIGMOD
+venue_type: conference
+extras:
+  exclude_sessions:
+    - Keynote addresses
+    - Tutorials
+    - "Demonstrations group A: information extraction, search, performance, and clouds"
+    - "Demonstrations group B: social- or user-centered"
+    - "Demonstrations group C: analytics"
+    - "Undergraduate poster competition"

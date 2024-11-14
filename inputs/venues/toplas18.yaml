@@ -1,0 +1,11 @@
+area:
+- programming_languages
+- operating_systems
+articles: []
+date: '2017-12-10T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/toplas/toplas40
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/toplas/X18
+venue: TOPLAS
+venue_type: journal

@@ -1,0 +1,12 @@
+area:
+- computer_security
+articles: []
+date: '2023-11-26T00:00:00Z'
+dblp_search: https://dblp.org/db/conf/ccs/ccs2023
+venue: CCS
+venue_type: conference
+extras:
+  exclude_sessions:
+    - "Session 60: Poster Session"
+    - "Session 61: Workshops"
+    - "Session 62: Demos"

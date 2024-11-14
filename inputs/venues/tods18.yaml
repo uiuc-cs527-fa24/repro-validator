@@ -1,0 +1,10 @@
+area:
+- databases
+articles: []
+date: '2018-03-06T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/tods/tods43
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/tods/Jensen18
+venue: TODS
+venue_type: journal

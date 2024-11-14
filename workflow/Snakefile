@@ -1,0 +1,75 @@
+import pathlib
+import sys
+import os
+
+
+project_root = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
+os.environ["PYTHONPATH"] = ":".join([str(project_root), os.environ.get("PYTHONPATH", ":")])
+
+
+venues = [
+    file.name.partition(".")[0]
+    for file in pathlib.Path("data/venue_spec").iterdir()
+]
+
+rule all:
+    input:
+        "outputs/cp_report.md",
+        "outputs/completed_report.md",
+        "outputs/queue.csv",
+
+rule download_dblp:
+    input:
+        "inputs/venues/{venue}.yaml",
+    output:
+        "intermediates/venues/{venue}.yaml",
+    script:
+        "download_dblp.py"
+
+rule bibcode_to_url:
+    input:
+        expand("intermediates/venues/{venue}.yaml", venue=venues),
+    output:
+        "intermediates/bibcode_to_url.csv",
+    run:
+        from repro_validator.schema import ArticleGroup
+        import yaml, pathlib, polars, rich.progress
+        table = []
+        for f in rich.progress.track(input):
+            article_group = ArticleGroup(**yaml.safe_load(pathlib.Path(f).read_text()))
+            for article in article_group.articles:
+                table.append({
+                    "bibcode": article.dblp_url.path.split("/")[-1],
+                    "url": str(article.dblp_url),
+                    "doi": str(article.doi_url),
+                    "venue": article_group.venue,
+                    "year": article_group.date.year,
+                })
+        polars.from_records(table).write_csv(output[0])
+
+rule check_cp_bibcodes:
+    input:
+        article_groups=expand("intermediates/venues/{venue}.yaml", venue=venues),
+        cp_bibcodes="inputs/cp_bibcodes.csv",
+        old_to_new_bibcodes="inputs/old_to_new_bibcodes.csv",
+        bibcode_to_url="intermediates/bibcode_to_url.csv",
+    output:
+        "outputs/cp_report.md"
+    script:
+        "check_cp_bibcodes.py"
+
+rule count_completed:
+    input:
+        article_groups=expand("intermediates/venues/{venue}.yaml", venue=venues),
+        cp_bibcodes="inputs/cp_bibcodes.csv",
+        mp2_bibcodes="inputs/mp2_bibcodes.csv",
+        old_to_new_bibcodes="inputs/old_to_new_bibcodes.csv",
+        queue_bibcodes="inputs/queue.csv",
+        bibcode_to_url="intermediates/bibcode_to_url.csv",
+        jingyud_data="inputs/jingyud_data.csv",
+    output:
+        report="outputs/completed_report.md",
+        output_queue="outputs/queue.csv",
+    script:
+        "count_completed.py"

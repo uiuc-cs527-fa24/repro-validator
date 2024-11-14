@@ -1,0 +1,10 @@
+area:
+- programming_languages
+articles: []
+date: '2018-06-18T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/pacmpl/pacmpl8
+venue: PLDI
+venue_type: conference
+extras:
+  include_sessions:
+    - Volume 8, Number PLDI, 2024

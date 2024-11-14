@@ -1,4 +1,6 @@
+.snakemake/
 article_groups/
+intermediates/
 queue.csv
 .direnv/
 .venv/

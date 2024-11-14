@@ -1,0 +1,10 @@
+area:
+- operating_systems
+articles: []
+date: '2019-03-14T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/tocs/tocs36
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/tocs/Jha20
+venue: TOCS
+venue_type: journal

@@ -1,0 +1,19 @@
+area:
+- databases
+articles: []
+date: '2023-09-01T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/pvldb/pvldb17
+venue: (P)VLDB
+venue_type: journal
+extras:
+  exclude_sessions:
+    - Volume 17, Number 1, 2023
+    - Volume 17, Number 2, 2023
+    - Volume 17, Number 3, November 2023
+    - Volume 17, Number 4, December 2023
+  exclude_articles:
+      - https://dblp.org/rec/journals/pvldb/ZhangS24
+      - https://dblp.org/rec/journals/pvldb/ZhangS24a
+      - https://dblp.org/rec/journals/pvldb/ZhangS24b
+      - https://dblp.org/rec/journals/pvldb/ZhangS24c
+      - https://dblp.org/rec/journals/pvldb/ZhangSFCDSTATWXGPBWHSOZ24

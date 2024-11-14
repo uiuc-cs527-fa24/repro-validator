@@ -1,0 +1,13 @@
+area:
+- computer_security
+articles: []
+date: '2012-10-16T00:00:00Z'
+dblp_search: https://dblp.org/db/conf/ccs/ccs2012
+venue: CCS
+venue_type: conference
+extras:
+  exclude_sessions:
+    - Keynote address
+    - Posters & demos
+    - Tutorials
+    - Workshops

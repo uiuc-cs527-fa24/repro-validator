@@ -1,0 +1,10 @@
+area:
+- computer_architecture
+articles: []
+date: '2018-03-22T00:00:00Z'
+dblp_search: https://dblp.org/db/journals/taco/taco15
+extras:
+  exclude_articles:
+    - https://dblp.org/rec/journals/taco/Bilas19
+venue: TACO
+venue_type: journal
