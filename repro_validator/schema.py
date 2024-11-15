@@ -479,8 +479,10 @@ class Run(DockerfileDirective, pydantic.BaseModel):
 
 
 def parse_cmds(
-    cmds: list[Command | str | typing.Mapping[str, typing.Any]],
+    cmds: str | list[Command | str | typing.Mapping[str, typing.Any]],
 ) -> typing.Sequence[Command]:
+    if isinstance(cmds, str):
+        return [Command(args=shlex.split(cmds))]
     ret = []
     for cmd in cmds:
         if isinstance(cmd, str):

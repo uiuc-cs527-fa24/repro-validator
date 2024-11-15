@@ -29,6 +29,7 @@ async def test_directory(
             pathlib.Path("test_cases/"),
             aiohttp_client,
             use_archive_org=False,
+            offline=False,
         )
     )
     assert any(
@@ -47,6 +48,7 @@ async def test_nonexistant(
             pathlib.Path("test_cases/nonexistant.yaml"),
             aiohttp_client,
             use_archive_org=False,
+            offline=False,
         )
     )
     assert any(
@@ -65,6 +67,7 @@ async def test_invalid_yaml(
             pathlib.Path("test_cases/invalid_yaml.yaml"),
             aiohttp_client,
             use_archive_org=False,
+            offline=False,
         )
     )
     assert any(
@@ -83,6 +86,7 @@ async def test_invalid_article(
             pathlib.Path("test_cases/invalid_article.yaml"),
             aiohttp_client,
             use_archive_org=False,
+            offline=False,
         )
     )
     assert any(
@@ -108,6 +112,7 @@ async def test_empty_article(
                 )
             ),
             use_archive_org=False,
+            offline=False,
         )
     )
     print(errors)
@@ -127,6 +132,7 @@ async def test_invalid_ids(
                 dblp_url=pydantic_core.Url("https://dblp.org/rec/a/b/c"),
             ),
             use_archive_org=False,
+            offline=False,
         )
     )
     assert any(
@@ -164,8 +170,11 @@ async def test_valid_article_yaml(
             pathlib.Path("test_cases/valid.yaml"),
             aiohttp_client,
             use_archive_org=False,
+            offline=False,
         )
     )
+    for level, msg in errors:
+        print(level, msg)
     assert not any(
         [
             level in {validator.Level.error, validator.Level.fatal_error}
@@ -175,8 +184,8 @@ async def test_valid_article_yaml(
 
 
 def test_dockerfile_build() -> None:
-    article_yaml = pathlib.Path("test_cases/valid.yaml")
-    article_yaml_text = article_yaml.read_text()
+    valid_case = pathlib.Path("test_cases/valid.yaml")
+    article_yaml_text = valid_case.read_text()
     article_dict = yaml.safe_load(article_yaml_text)
     article = schema.Article(**article_dict)
     assert isinstance(article.computational_status, schema.ComputationalArticle)

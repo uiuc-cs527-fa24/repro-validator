@@ -35,43 +35,53 @@ computational_status:
         name: ubuntu
         tag: "18.04"
       build_directives:
+
+        # Test apt-get install
         - type: apt-get install
           packages:
             - git
-            - make
-            - g++
-            - autoconf
-            - automake
-            - libtool
-            - pkg-config
-            - libgmp-dev
-            - libyaml-dev
-            - llvm-10
-            - llvm-10-dev
-            - clang-10
-            - libclang-10-dev
-        - type: RUN
-          cmds:
-            - update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100
-            - update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10 100
+            - dash
+
+        # Test RUN cmds list
         - type: RUN
           cmds:
             - echo "Hello world"
+
+        # Test RUN cmds string
+        - type: RUN
+          cmds: mkdir /contracts
+
+        # Test Raw RUN
         - type: Raw RUN
           cmds: |
             echo "hello" > world && cat world | tee
+
+        # Test ENV
         - type: ENV
           mapping:
             PATH: /opt/bin:$PATH
+
+        # Test Copy files that require mkdir
         - type: COPY file literal
-          contents: "#!/usr/bin/env
-            echo hi"
-          destination: /foobar
+          contents: "hello world"
+          destination: /tmp/test/foo/bar
+          executable: false
+
+        # Test copy files with executable: true
+        - type: COPY file literal
+          contents: |
+            #!/usr/bin/env bash
+            echo hi
+          destination: /opt/bin/foobar
           executable: true
+
+        # This tests that the ENV and COPY file actually worked
+        - type: RUN
+          cmds: foobar
+
       test_directives:
         - type: RUN
           cmds:
-            # - make check
             - "true"
       result:
         type: BuildAndTestSuccess

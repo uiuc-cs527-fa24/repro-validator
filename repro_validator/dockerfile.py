@@ -73,16 +73,21 @@ def to_dockerfile_source(
             for (var, val), is_last in is_last_sentinel(directive.mapping.items()):
                 lines.append(f'    {var}="{val}"' + (" \\" if not is_last else ""))
         elif isinstance(directive, schema.CopyFileLiteral):
+            mkdir = (
+                f"mkdir --parents {directive.destination.parent} &&"
+                if directive.destination.parent else
+                ""
+            )
+            chmod = (
+                f" && chmod +x {directive.destination!s}"
+                if directive.executable else
+                ""
+            )
             lines.append(
-                f"RUN cat <<EOF > {directive.destination!s}"
-                + " && chmod +x {directive.destination!s}"
-                if directive.executable
-                else ""
+                f"RUN {mkdir} cat <<EOF > {directive.destination!s} {chmod}"
             )
             lines.append(directive.contents)
             lines.append("EOF")
-        elif isinstance(directive, schema.CopyFile):
-            lines.append(f"COPY {directive.source!s} {directive.destination!s}")
         elif isinstance(directive, schema.AptGetInstall):
             lines.append("RUN apt-get update && \\")
             lines.append("    apt-get install -y --no-install-recommends\\")

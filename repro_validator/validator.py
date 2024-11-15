@@ -1,3 +1,4 @@
+import tomllib
 import importlib.metadata
 import enum
 import rdflib
@@ -9,6 +10,16 @@ import yaml
 import pathlib
 from . import schema
 from . import util
+
+VERSION: None | str
+try:
+    VERSION = importlib.metadata.version("repro_validator")
+except importlib.metadata.PackageNotFoundError:
+    pyproject = pathlib.Path().resolve().parent.parent / "pyproject.toml"
+    if pyproject.exists():
+        VERSION = tomllib.loads(pyproject.read_text())["project"]["version"]
+    else:
+        VERSION = None
 
 
 class Level(enum.Enum):
@@ -74,9 +85,8 @@ async def validate_article(
             "Please fill badges with a list of ACM badges the article earned or empty-list",
         )
 
-    version = importlib.metadata.version("repro_validator")
-    if article.version == version:
-        yield (Level.error, f"Please write `version: {version!r}` in article")
+    if VERSION is not None and article.version == VERSION:
+        yield (Level.error, f"Please write `version: {VERSION!r}` in article")
 
     if isinstance(article.computational_status, schema.Unknown):
         yield (Level.error, "computational_status should be filled")
