@@ -73,9 +73,9 @@ def deterministic_shuffle(seed: int, lst: typing.Iterable[_T]) -> list[_T]:
 
 
 def deterministic_stable_shuffle(
-        seed: int,
-        lst: typing.Iterable[_T],
-        key: typing.Callable[[_T], bytes],
+    seed: int,
+    lst: typing.Iterable[_T],
+    key: typing.Callable[[_T], bytes],
 ) -> list[_T]:
     """Stable shuffle is a shuffle where inserting/removing one element does not disturb the ordering of the others in the shuffled result."""
     rng = random.Random(seed)

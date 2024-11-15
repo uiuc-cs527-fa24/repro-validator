@@ -54,12 +54,14 @@ class Article(pydantic.BaseModel):
 
     dblp_url: typing.Annotated[
         pydantic.HttpUrl,
-        pydantic.AfterValidator(url_constraints(
-            "https",
-            "dblp.org",
-            "/rec/",
-            "",
-        ))
+        pydantic.AfterValidator(
+            url_constraints(
+                "https",
+                "dblp.org",
+                "/rec/",
+                "",
+            )
+        ),
     ]
     """DBLP key in https://dblp.org
 
@@ -80,10 +82,13 @@ class Article(pydantic.BaseModel):
 
     """
 
-    doi_url: typing.Annotated[
-        pydantic.HttpUrl,
-        pydantic.AfterValidator(url_constraints("https", "doi.org", "/", None)),
-    ] | None = None
+    doi_url: (
+        typing.Annotated[
+            pydantic.HttpUrl,
+            pydantic.AfterValidator(url_constraints("https", "doi.org", "/", None)),
+        ]
+        | None
+    ) = None
 
     other_article_urls: typing.Sequence[pydantic.HttpUrl] | None = None
 
@@ -118,10 +123,13 @@ class Author(pydantic.BaseModel):
         pydantic.HttpUrl,
         pydantic.AfterValidator(url_constraints("https", "dblp.org", "/pid/", "")),
     ]
-    orcid_url: typing.Annotated[
-        pydantic.HttpUrl,
-        pydantic.AfterValidator(url_constraints("https", "orcid.org", "/", "")),
-    ] | None = None
+    orcid_url: (
+        typing.Annotated[
+            pydantic.HttpUrl,
+            pydantic.AfterValidator(url_constraints("https", "orcid.org", "/", "")),
+        ]
+        | None
+    ) = None
 
 
 class NoncomputationalArticle(pydantic.BaseModel):
@@ -412,21 +420,25 @@ class BuildAndTestSuccess(pydantic.BaseModel):
 
 
 def url_constraints(
-        scheme: str,
-        host: str,
-        path_prefix: str,
-        extension: str | None,
+    scheme: str,
+    host: str,
+    path_prefix: str,
+    extension: str | None,
 ) -> typing.Callable[[pydantic.HttpUrl], pydantic.HttpUrl]:
     def verifier(url: pydantic.HttpUrl) -> pydantic.HttpUrl:
         if (
-                url.scheme == scheme
-                and url.host == host
-                and (url.path or "").startswith(path_prefix)
-                and extension is None or (url.path or "").split("/")[-1].partition(".")[2] == extension
+            url.scheme == scheme
+            and url.host == host
+            and (url.path or "").startswith(path_prefix)
+            and extension is None
+            or (url.path or "").split("/")[-1].partition(".")[2] == extension
         ):
             return url
         else:
-            raise ValueError(f"Invalid url {url}; should be {scheme}://{host}{path_prefix}{'.' + extension if extension else ''}")
+            raise ValueError(
+                f"Invalid url {url}; should be {scheme}://{host}{path_prefix}{'.' + extension if extension else ''}"
+            )
+
     return verifier
 
 

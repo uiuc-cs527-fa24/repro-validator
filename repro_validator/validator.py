@@ -364,7 +364,12 @@ async def validate_link_path(
                     )
 
     first_url_host = link_path.links[0].url.host or ""
-    if (first_url_host or "").lower() not in {"doi.org", "www.google.com", "www.usenix.org", "www.vldb.org"}:
+    if (first_url_host or "").lower() not in {
+        "doi.org",
+        "www.google.com",
+        "www.usenix.org",
+        "www.vldb.org",
+    }:
         yield (
             Level.error,
             f"First link in every path should be article (https://doi.org/10.xxx/yyy, www.usenix.org, www.vldb.org) or https://www.google.com/search search query not {first_url_host}",

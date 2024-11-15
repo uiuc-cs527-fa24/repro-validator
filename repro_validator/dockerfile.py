@@ -75,17 +75,15 @@ def to_dockerfile_source(
         elif isinstance(directive, schema.CopyFileLiteral):
             mkdir = (
                 f"mkdir --parents {directive.destination.parent} &&"
-                if directive.destination.parent else
-                ""
+                if directive.destination.parent
+                else ""
             )
             chmod = (
                 f" && chmod +x {directive.destination!s}"
-                if directive.executable else
-                ""
+                if directive.executable
+                else ""
             )
-            lines.append(
-                f"RUN {mkdir} cat <<EOF > {directive.destination!s} {chmod}"
-            )
+            lines.append(f"RUN {mkdir} cat <<EOF > {directive.destination!s} {chmod}")
             lines.append(directive.contents)
             lines.append("EOF")
         elif isinstance(directive, schema.AptGetInstall):
