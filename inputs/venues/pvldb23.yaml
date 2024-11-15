@@ -7,13 +7,14 @@ venue: (P)VLDB
 venue_type: journal
 extras:
   exclude_sessions:
-    - Volume 17, Number 1, 2023
-    - Volume 17, Number 2, 2023
-    - Volume 17, Number 3, November 2023
-    - Volume 17, Number 4, December 2023
+    # - Volume 17, Number 1, 2023
+    # - Volume 17, Number 2, 2023
+    # - Volume 17, Number 3, November 2023
+    # - Volume 17, Number 4, December 2023
+    - Volume 17, Number 12, August 2024 # This session is for Industrial Papers, Tutorials, Panel, Endowment Awards, Keynotes
   exclude_articles:
-      - https://dblp.org/rec/journals/pvldb/ZhangS24
-      - https://dblp.org/rec/journals/pvldb/ZhangS24a
-      - https://dblp.org/rec/journals/pvldb/ZhangS24b
-      - https://dblp.org/rec/journals/pvldb/ZhangS24c
-      - https://dblp.org/rec/journals/pvldb/ZhangSFCDSTATWXGPBWHSOZ24
+    - https://dblp.org/rec/journals/pvldb/ZhangS24
+    - https://dblp.org/rec/journals/pvldb/ZhangS24a
+    - https://dblp.org/rec/journals/pvldb/ZhangS24b
+    - https://dblp.org/rec/journals/pvldb/ZhangS24c
+    - https://dblp.org/rec/journals/pvldb/ZhangSFCDSTATWXGPBWHSOZ24

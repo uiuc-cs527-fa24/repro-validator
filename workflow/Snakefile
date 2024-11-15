@@ -10,7 +10,7 @@ os.environ["PYTHONPATH"] = ":".join([str(project_root), os.environ.get("PYTHONPA
 
 venues = [
     file.name.partition(".")[0]
-    for file in pathlib.Path("data/venue_spec").iterdir()
+    for file in pathlib.Path("inputs/venues").iterdir()
 ]
 
 rule all:

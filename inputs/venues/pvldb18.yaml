@@ -20,3 +20,6 @@ extras:
     - https://dblp.org/rec/journals/pvldb/Amer-YahiaP18f
     - https://dblp.org/rec/journals/pvldb/Amer-YahiaP18g
     - https://dblp.org/rec/journals/pvldb/Amer-YahiaP18h
+  exclude_sessions:
+    # This session (according to the frontmatter) is for Industrial & Applications, Demonstrations, Tutorials, and Award Talks & Talk Panels
+    - Volume 11, Number 12, August 2018

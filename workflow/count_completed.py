@@ -23,17 +23,24 @@ old_to_new = dict(polars.read_csv(snakemake.input.old_to_new_bibcodes).select("o
 
 cp_ignored: list[str] = [
     bibcode_to_url.get(old_to_new.get(bibcode, bibcode), bibcode)
-    for bibcode in polars.read_csv(snakemake.input.cp_bibcodes).filter(
-            polars.col("backed_by_code").not_().or_(polars.col("needs_specialized_hardware").str.contains("True")).or_(polars.col("has_source").not_())
-    )["bibcode"]
+    for bibcode in (
+            polars.read_csv(snakemake.input.cp_bibcodes)
+            .filter(
+                polars.col("backed_by_code").not_()
+                .or_(polars.col("needs_specialized_hardware").str.contains("True"))
+                .or_(polars.col("has_source").not_())
+            )
+            ["bibcode"]
+    )
 ]
 mp2: list[str] = [
     bibcode_to_url.get(old_to_new.get(bibcode, bibcode), bibcode)
     for bibcode in polars.read_csv(snakemake.input.mp2_bibcodes)["bibcode"]
 ]
+google_qu_df = polars.read_csv(snakemake.input.queue_bibcodes, separator="\t").filter(polars.col("netid").str.len_chars() > 0)
 qu: list[str] = [
     bibcode_to_url.get(old_to_new.get(bibcode, bibcode), bibcode)
-    for bibcode in polars.read_csv(snakemake.input.queue_bibcodes).filter(polars.col("netid").str.len_chars() > 0)["bibcode"]
+    for bibcode in google_qu_df["dblp_url"]
 ]
 jingyud: list[str] = [
     doi_to_url[doi]
@@ -130,17 +137,22 @@ for i in range(0, 100, 1):
             priorities_for_i.append((article_group, incomplete[old_todo:todo]))
     prioritized_sequence.append((i / 100, priorities_for_i))
 
-
-polars.from_records([
+new_google_qu_df = polars.from_records([
     {
         "dblp_url": str(article.dblp_url),
         "netid": "",
-        "type": "3",
-        "frac": f"{int(frac * 100)}",
+        "type": 3,
+        "frac": f"{frac:.2f}",
         "venue": article_group.venue,
-        "year": article_group.date.year,
+        "year": str(article_group.date.year),
     }
     for frac, article_group_articles in prioritized_sequence
     for article_group, articles in article_group_articles
     for article in articles
+])
+print(google_qu_df.schema)
+print(new_google_qu_df.schema)
+polars.concat([
+    google_qu_df,
+    new_google_qu_df,
 ]).write_csv(snakemake.output.output_queue)
