@@ -42,6 +42,15 @@
           };
         };
         packages = rec {
+          lib = python.pkgs.buildPythonPackage {
+            pyproject = true;
+            pname = "repro-validator";
+            version = version;
+            propagatedBuildInputs = inputs python.pkgs;
+            nativeBuildInputs = [ python.pkgs.setuptools ];
+            doCheck = false;
+            src = ./.;
+          };
           default = python.pkgs.buildPythonApplication {
             pyproject = true;
             pname = "repro-validator";
