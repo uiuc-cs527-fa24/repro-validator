@@ -1,0 +1,30 @@
+dblp_url: https://dblp.org/rec/conf/asplos/ChenKCKWD024.html
+badges: [artifacts_evaluated_functional_v1_1, artifacts_available_v1_1, results_reproduced_v1_1]
+computational_status:
+  type: ComputationalArticle
+  tool_names:
+    - EVT operator compiler
+  innermost_computational_section_headings:
+    - Our Approach
+    - Evaluation
+  source_search:
+    type: SourceFound
+    path:
+      - https://doi.org/10.1145/3620666.3651369
+      - https://github.com/apuaaChen/EVT_AE
+    is_source_versioned: yes
+    extra_resources:
+      - nvidia_gpu
+    reproducibility_documentation_level: specifies_every_command
+    build_attempt:
+      base_image: ubuntu:22.04
+      time_spent: 0
+      build_directives: []
+      test_directives: []
+      result:
+        type: BuildCrash
+        time_spent: 0
+        crashing_command_output: "N/A"
+        code: extra_resources
+        description: |
+          Putatively, this build will crash since it requires NVIDIA GPU.

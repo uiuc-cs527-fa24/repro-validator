@@ -237,7 +237,7 @@ class SourceFound(pydantic.BaseModel):
 
     """
 
-    extra_resources: frozenset[NonstandardResource] = frozenset()
+    extra_resources: frozenset[ExtraResource] = frozenset()
     """A list of extra resources requried beyond a headless x86_64 Linux, if any.
 
     This should usually be empty.
@@ -396,6 +396,7 @@ class ErrorCode(enum.StrEnum):
     missing_data = enum.auto()
     unassigned = enum.auto()
     unresolvable_compile_error = enum.auto()
+    extra_resources = enum.auto()
 
 
 class TestFail(pydantic.BaseModel):
@@ -445,12 +446,14 @@ def url_constraints(
 vcs_schemes = ["git", "svn", "cvs", "hg"]
 
 
-class NonstandardResource(enum.StrEnum):
+class ExtraResource(enum.StrEnum):
     arm_cpu = enum.auto()
     intel_cpu = enum.auto()
     intel_sgx_cpu = enum.auto()
     intel_vt_x = enum.auto()
+    amd_sev = enum.auto()
     gpu = enum.auto()
+    nvidia_gpu = enum.auto()
     fpga = enum.auto()
     more_than_1_hour = enum.auto()
     more_than_8gb_ram = enum.auto()
@@ -460,6 +463,8 @@ class NonstandardResource(enum.StrEnum):
     commercial_cloud = enum.auto()
     performance_counter_access = enum.auto()
     manipulate_linux_kernel_modules = enum.auto()
+    manipulate_linux_cmdline = enum.auto()
+    manipulate_kernel = enum.auto()
     manipulate_docker_containers = enum.auto()
     proprietary_software = enum.auto()
     large_download = enum.auto()
@@ -559,7 +564,7 @@ class CopyFileLiteral(DockerfileDirective, pydantic.BaseModel):
     type: typing.Literal["COPY file literal"] = "COPY file literal"
     contents: str
     destination: pathlib.PurePath
-    executable: bool
+    executable: bool = False
 
 
 class CopyFile(DockerfileDirective, pydantic.BaseModel):
