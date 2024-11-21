@@ -19,7 +19,7 @@ def yarl_to_pydantic(url: yarl.URL) -> pydantic_core.Url:
 
 console = rich.console.Console()
 progress = rich.progress.Progress(console=console)
-timeout = 10
+timeout = aiohttp.ClientTimeout(total=10)
 max_redirects = 20
 
 

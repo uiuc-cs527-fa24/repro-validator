@@ -202,7 +202,7 @@ class SourceNotFound(pydantic.BaseModel):
     google_searches_tried: typing.Sequence[str]
     """List of search strings (NOT URLs)"""
 
-    notes: str
+    notes: str = ""
     """Any extra notes"""
 
 
@@ -461,6 +461,8 @@ class NonstandardResource(enum.StrEnum):
     performance_counter_access = enum.auto()
     manipulate_linux_kernel_modules = enum.auto()
     manipulate_docker_containers = enum.auto()
+    proprietary_software = enum.auto()
+    large_download = enum.auto()
 
 
 class DockerfileDirective(pydantic.BaseModel):

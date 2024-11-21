@@ -7,7 +7,7 @@ packages = [ "repro_validator" ]
 
 [project]
 name = "Repro-validator"
-version = "0.2.13"
+version = "0.2.14"
 dependencies = [
     "typer",
     "rich",

@@ -291,7 +291,7 @@ async def validate_breakable_link(
         url, status, _ = await link_request
         if status != 200 and not breakable_link.dead_on:
             yield (
-                Level.error,
+                Level.possible_error,
                 f"{breakable_link.url!s} is dead; dead_on should be set to whenever you first noticed this (today?)",
             )
         elif status == 200:

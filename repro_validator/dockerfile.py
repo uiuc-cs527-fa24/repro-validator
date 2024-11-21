@@ -87,9 +87,11 @@ def to_dockerfile_source(
             lines.append(directive.contents)
             lines.append("EOF")
         elif isinstance(directive, schema.AptGetInstall):
-            lines.append("RUN apt-get update && \\")
-            lines.append("    apt-get install -y --no-install-recommends\\")
-            for package, is_last in is_last_sentinel(directive.packages):
+            lines.append("RUN \\")
+            lines.append("    apt-get update && \\")
+            lines.append("    DEBIAN_FRONTEND=noninteractive \\")
+            lines.append("    apt-get install -y --no-install-recommends \\")
+            for package in directive.packages:
                 if isinstance(package, str):
                     package_str = str(package)
                 elif isinstance(package, tuple) and len(package) == 2:
@@ -98,8 +100,8 @@ def to_dockerfile_source(
                     raise TypeError(
                         f"Unknown package: {type(package).__name__}: {package!r}"
                     )
-                lines.append(f"    {package_str} " + ("&& \\" if is_last else "\\"))
-            lines.append("    rm -rf /var/lib/apt/lists/*")
+                lines.append(f"    {package_str} \\")
+            lines.append("    && rm -rf /var/lib/apt/lists/*")
         else:
             raise TypeError(
                 f"Unknown directive: {type(directive).__name__}: {directive!r}"

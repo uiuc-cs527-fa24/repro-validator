@@ -13,11 +13,11 @@ repro-validator validate bibcode.yaml
 If you don't have Python 3.12, try using Nix (from source) or Docker (binary).
 
 ``` sh
-nix run github:uiuc-cs527-fa24/repro-validator/0.2.13 -- validate bibcode.yaml
+nix run github:uiuc-cs527-fa24/repro-validator/0.2.14 -- validate bibcode.yaml
 
 # or
 
-docker run --rm -t -e TERM=$TERM -e CHOWN=1 -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.13 validate bibcode.yaml
+docker run --rm -t -e TERM=$TERM -e CHOWN=1 -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.14 validate bibcode.yaml
 ```
 
 Whichever method, you have the following subcommands:
@@ -136,7 +136,13 @@ Note: there is no equivalent of `WORKDIR`. Simply `cd` at the beginning of your 
 
 ## Changelog
 
-## 0.2.13
+### 0.2.14
+
+- Fixed some bugs regarding `&&` at the end of lines.
+- Set `DEBIAN_FRONTEND=NONINTERACTIVE` for `apt-get install`.
+- Changed URLs that respond with 400 from error to possible_error.
+
+### 0.2.13
 
 - Fix `COPY file literal`.
 - Allow `cmds` to take a single string rather than a list.

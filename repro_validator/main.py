@@ -83,12 +83,12 @@ def export_dockerfile(
         raise typer.Exit(code=1)
 
     if not isinstance(article.computational_status, schema.ComputationalArticle):
-        console.print("[red]Not a computational article")
-        raise typer.Exit(code=1)
+        console.print("[green]NonComputational article")
+        return
 
     if not isinstance(article.computational_status.source_search, schema.SourceFound):
-        console.print("[red]Source not found")
-        raise typer.Exit(code=1)
+        console.print("[green]SourceNotFound article")
+        return
 
     if article.computational_status.source_search.build_attempt is None:
         console.print("[red]No build attempt")
