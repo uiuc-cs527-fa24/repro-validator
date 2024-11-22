@@ -396,6 +396,7 @@ class ErrorCode(enum.StrEnum):
     missing_data = enum.auto()
     unassigned = enum.auto()
     unresolvable_compile_error = enum.auto()
+    unresolvable_dependency_error = enum.auto()
     extra_resources = enum.auto()
 
 
@@ -468,6 +469,7 @@ class ExtraResource(enum.StrEnum):
     manipulate_docker_containers = enum.auto()
     proprietary_software = enum.auto()
     large_download = enum.auto()
+    ms_windows = enum.auto()
 
 
 class DockerfileDirective(pydantic.BaseModel):
