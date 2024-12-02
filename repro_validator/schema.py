@@ -360,7 +360,7 @@ class BuildAttempt(pydantic.BaseModel):
     """
 
     result: typing.Annotated[
-        BuildCrash | TestFail | BuildAndTestSuccess,
+        BuildIncomplete | TestIncomplete | BuildCrash | TestFail | BuildAndTestSuccess,
         pydantic.Field(discriminator="type"),
     ]
 
@@ -442,6 +442,16 @@ def url_constraints(
             )
 
     return verifier
+
+
+class BuildIncomplete(pydantic.BaseModel):
+    type: typing.Literal["BuildIncomplete"]
+
+    notes: str
+
+class TestIncomplete(pydantic.BaseModel):
+    type: typing.Literal["TestIncomplete"]
+    notes: str
 
 
 vcs_schemes = ["git", "svn", "cvs", "hg"]
