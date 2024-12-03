@@ -136,7 +136,7 @@ async def validate_article(
                                 Level.error,
                                 f"Source {directive.source} should be relative and not contain ..",
                             )
-                        if not directive.source.relative_to(base_path).exists():
+                        if not (base_path / directive.source).exists():
                             yield (
                                 Level.error,
                                 f"Source {directive.source} does not exist relative to the YAML {base_path}",
