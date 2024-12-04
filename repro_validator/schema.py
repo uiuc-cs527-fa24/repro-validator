@@ -459,6 +459,7 @@ vcs_schemes = ["git", "svn", "cvs", "hg"]
 
 
 class ExtraResource(enum.StrEnum):
+    other_hardware = enum.auto()
     manipulate_fs_mounts = enum.auto()
     arm_cpu = enum.auto()
     intel_cpu = enum.auto()
