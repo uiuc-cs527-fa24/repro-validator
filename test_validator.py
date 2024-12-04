@@ -1,5 +1,6 @@
 import shlex
 import subprocess
+import tempfile
 import pydantic_core
 import collections
 import yaml
@@ -11,6 +12,9 @@ import pytest_asyncio
 from repro_validator import validator
 from repro_validator import schema
 from repro_validator import dockerfile
+
+
+project_root = pathlib.Path(__file__)
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -160,10 +164,19 @@ def test_run_cmd_coercer(
     assert r.cmds[2] == schema.Command(args=["spam", "eggs"])
 
 
+buildable_cases = [
+    pathlib.Path("test_cases/valid.yaml"),
+    pathlib.Path("test_cases/valid_raw_string.yaml"),
+    pathlib.Path("test_cases/valid_extra_resources.yaml"),
+]
+
+
 @pytest.mark.asyncio
 @pytest.mark.vcr
+@pytest.mark.parametrize("buildable_case", buildable_cases)
 async def test_valid_article_yaml(
     aiohttp_client: aiohttp.ClientSession,
+    buildable_case: pathlib.Path,
 ) -> None:
     errors = await async_collect_list(
         validator.validate_article_yaml(
@@ -181,12 +194,6 @@ async def test_valid_article_yaml(
             for level, msg in errors
         ]
     )
-
-
-buildable_cases = [
-    pathlib.Path("test_cases/valid.yaml"),
-    pathlib.Path("test_cases/valid_raw_string.yaml")
-]
 
 
 @pytest.mark.parametrize("buildable_case", buildable_cases)
@@ -213,17 +220,20 @@ def test_dockerfile_build(buildable_case: pathlib.Path) -> None:
 
 
 def test_venv_installation() -> None:
-    subprocess.run(["rm", "--recursive", "--force", ".venv"], check=True)
-    subprocess.run(["python", "-m", "venv", ".venv"], check=True)
-    subprocess.run([
-        "bash",
-        "-c",
-        " && ".join([
-            shlex.join(["source", ".venv/bin/activate"]),
-            shlex.join(["pip", "install", "."]),
-            shlex.join(["repro-validator", "--help"]),
-        ]),
-    ], check=True)
+    with tempfile.TemporaryDirectory() as td:
+        subprocess.run([
+            "bash",
+            "-c",
+            " && ".join([
+                shlex.join(["python", "-m", "venv", ".venv"]),
+                shlex.join(["source", ".venv/bin/activate"]),
+                shlex.join(["pip", "install", str(project_root.parent)]),
+                *[
+                    shlex.join(["repro-validator", "export-dockerfile", str(buildable_case.resolve())])
+                    for buildable_case in buildable_cases
+                ],
+            ]),
+        ], check=True, cwd=td)
 
 
 _T = typing.TypeVar("_T")

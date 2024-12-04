@@ -447,12 +447,12 @@ def url_constraints(
 class BuildIncomplete(pydantic.BaseModel):
     type: typing.Literal["BuildIncomplete"]
 
-    notes: str
+    notes: str = ""
 
 
 class TestIncomplete(pydantic.BaseModel):
     type: typing.Literal["TestIncomplete"]
-    notes: str
+    notes: str = ""
 
 
 vcs_schemes = ["git", "svn", "cvs", "hg"]
