@@ -39,4 +39,4 @@ computational_status:
       build_directives: []
       test_directives: []
       result:
-        type: BuildCrash
+        type: BuildIncomplete
