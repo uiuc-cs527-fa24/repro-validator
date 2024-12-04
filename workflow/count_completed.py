@@ -37,7 +37,7 @@ mp2: list[str] = [
     bibcode_to_url.get(old_to_new.get(bibcode, bibcode), bibcode)
     for bibcode in polars.read_csv(snakemake.input.mp2_bibcodes)["bibcode"]
 ]
-google_qu_df = polars.read_csv(snakemake.input.queue_bibcodes, separator="\t").filter(polars.col("netid").str.len_chars() > 0)
+google_qu_df = polars.read_csv(snakemake.input.queue_bibcodes, separator=",").filter(polars.col("netid").str.len_chars() > 0)
 qu: list[str] = [
     bibcode_to_url.get(old_to_new.get(bibcode, bibcode), bibcode)
     for bibcode in google_qu_df["dblp_url"]
