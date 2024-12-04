@@ -1,0 +1,1045 @@
+{
+  "$defs": {
+    "AptGetInstall": {
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "apt-get install",
+          "default": "apt-get install",
+          "enum": [
+            "apt-get install"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "packages": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          },
+          "title": "Packages",
+          "type": "array"
+        }
+      },
+      "required": [
+        "packages"
+      ],
+      "title": "AptGetInstall",
+      "type": "object"
+    },
+    "Author": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "dblp_pid_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Dblp Pid Url",
+          "type": "string"
+        },
+        "orcid_url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Orcid Url"
+        }
+      },
+      "required": [
+        "name",
+        "dblp_pid_url"
+      ],
+      "title": "Author",
+      "type": "object"
+    },
+    "Badge": {
+      "description": "Badges defined on these pages:\n\n- <https://www.acm.org/publications/policies/artifact-review-and-badging-current>\n- <https://www.acm.org/publications/policies/artifact-review-badging>",
+      "enum": [
+        "artifacts_evaluated_functional_v1_1",
+        "artifacts_evaluated_reusable_v1_1",
+        "artifacts_available_v1_1",
+        "results_reproduced_v1_1",
+        "results_replicated_v1_1",
+        "artifacts_evaluated_functional",
+        "artifacts_evaluated_reusable",
+        "artifacts_available",
+        "results_reproduced",
+        "results_replicated"
+      ],
+      "title": "Badge",
+      "type": "string"
+    },
+    "BaseImage": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "tag": {
+          "title": "Tag",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "tag"
+      ],
+      "title": "BaseImage",
+      "type": "object"
+    },
+    "BreakableLink": {
+      "properties": {
+        "url": {
+          "format": "uri",
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "born_after": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Born After"
+        },
+        "earliest_alive_on": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Earliest Alive On"
+        },
+        "latest_alive_on": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Alive On"
+        },
+        "dead_on": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dead On"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "BreakableLink",
+      "type": "object"
+    },
+    "BuildAndTestSuccess": {
+      "properties": {
+        "type": {
+          "const": "BuildAndTestSuccess",
+          "enum": [
+            "BuildAndTestSuccess"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "BuildAndTestSuccess",
+      "type": "object"
+    },
+    "BuildAttempt": {
+      "properties": {
+        "base_image": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BaseImage"
+            }
+          ],
+          "default": {
+            "name": "ubuntu",
+            "tag": "16.04"
+          }
+        },
+        "time_spent": {
+          "title": "Time Spent",
+          "type": "integer"
+        },
+        "build_directives": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Run"
+              },
+              {
+                "$ref": "#/$defs/RawRun"
+              },
+              {
+                "$ref": "#/$defs/AptGetInstall"
+              },
+              {
+                "$ref": "#/$defs/Env"
+              },
+              {
+                "$ref": "#/$defs/CopyFileLiteral"
+              },
+              {
+                "$ref": "#/$defs/CopyFile"
+              },
+              {
+                "$ref": "#/$defs/DockerfileString"
+              }
+            ],
+            "descriminator": "type"
+          },
+          "title": "Build Directives",
+          "type": "array"
+        },
+        "test_directives": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Run"
+              },
+              {
+                "$ref": "#/$defs/RawRun"
+              },
+              {
+                "$ref": "#/$defs/AptGetInstall"
+              },
+              {
+                "$ref": "#/$defs/Env"
+              },
+              {
+                "$ref": "#/$defs/CopyFileLiteral"
+              },
+              {
+                "$ref": "#/$defs/CopyFile"
+              },
+              {
+                "$ref": "#/$defs/DockerfileString"
+              }
+            ],
+            "descriminator": "type"
+          },
+          "title": "Test Directives",
+          "type": "array"
+        },
+        "result": {
+          "discriminator": {
+            "mapping": {
+              "BuildAndTestSuccess": "#/$defs/BuildAndTestSuccess",
+              "BuildCrash": "#/$defs/BuildCrash",
+              "BuildIncomplete": "#/$defs/BuildIncomplete",
+              "TestFail": "#/$defs/TestFail",
+              "TestIncomplete": "#/$defs/TestIncomplete"
+            },
+            "propertyName": "type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/BuildIncomplete"
+            },
+            {
+              "$ref": "#/$defs/TestIncomplete"
+            },
+            {
+              "$ref": "#/$defs/BuildCrash"
+            },
+            {
+              "$ref": "#/$defs/TestFail"
+            },
+            {
+              "$ref": "#/$defs/BuildAndTestSuccess"
+            }
+          ],
+          "title": "Result"
+        }
+      },
+      "required": [
+        "time_spent",
+        "build_directives",
+        "test_directives",
+        "result"
+      ],
+      "title": "BuildAttempt",
+      "type": "object"
+    },
+    "BuildCrash": {
+      "properties": {
+        "type": {
+          "const": "BuildCrash",
+          "enum": [
+            "BuildCrash"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "time_spent": {
+          "title": "Time Spent",
+          "type": "integer"
+        },
+        "crashing_command_output": {
+          "title": "Crashing Command Output",
+          "type": "string"
+        },
+        "code": {
+          "$ref": "#/$defs/ErrorCode"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "time_spent",
+        "crashing_command_output",
+        "code",
+        "description"
+      ],
+      "title": "BuildCrash",
+      "type": "object"
+    },
+    "BuildIncomplete": {
+      "properties": {
+        "type": {
+          "const": "BuildIncomplete",
+          "enum": [
+            "BuildIncomplete"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "notes": {
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "notes"
+      ],
+      "title": "BuildIncomplete",
+      "type": "object"
+    },
+    "Command": {
+      "description": "A structured command.",
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Args",
+          "type": "array"
+        },
+        "redirect_stdin": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Redirect Stdin"
+        },
+        "redirect_stdout": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Redirect Stdout"
+        },
+        "redirect_stderr": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Redirect Stderr"
+        },
+        "ignore_failure": {
+          "default": false,
+          "title": "Ignore Failure",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "args"
+      ],
+      "title": "Command",
+      "type": "object"
+    },
+    "ComputationalArticle": {
+      "properties": {
+        "type": {
+          "const": "ComputationalArticle",
+          "enum": [
+            "ComputationalArticle"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "source_link_used_by_cp16": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BreakableLink"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tool_names": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tool Names",
+          "type": "array"
+        },
+        "innermost_computational_section_headings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Innermost Computational Section Headings",
+          "type": "array"
+        },
+        "source_search": {
+          "discriminator": {
+            "mapping": {
+              "SourceFound": "#/$defs/SourceFound",
+              "SourceNotFound": "#/$defs/SourceNotFound"
+            },
+            "propertyName": "type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SourceFound"
+            },
+            {
+              "$ref": "#/$defs/SourceNotFound"
+            }
+          ],
+          "title": "Source Search"
+        }
+      },
+      "required": [
+        "type",
+        "tool_names",
+        "innermost_computational_section_headings",
+        "source_search"
+      ],
+      "title": "ComputationalArticle",
+      "type": "object"
+    },
+    "CopyFile": {
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "COPY file",
+          "default": "COPY file",
+          "enum": [
+            "COPY file"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "source": {
+          "format": "path",
+          "title": "Source",
+          "type": "string"
+        },
+        "destination": {
+          "format": "path",
+          "title": "Destination",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "destination"
+      ],
+      "title": "CopyFile",
+      "type": "object"
+    },
+    "CopyFileLiteral": {
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "COPY file literal",
+          "default": "COPY file literal",
+          "enum": [
+            "COPY file literal"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "contents": {
+          "title": "Contents",
+          "type": "string"
+        },
+        "destination": {
+          "format": "path",
+          "title": "Destination",
+          "type": "string"
+        },
+        "executable": {
+          "default": false,
+          "title": "Executable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "contents",
+        "destination"
+      ],
+      "title": "CopyFileLiteral",
+      "type": "object"
+    },
+    "DockerfileString": {
+      "description": "Raw Dockerfile string.\n\nAnything except FROM is valid here.",
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "raw string",
+          "enum": [
+            "raw string"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "content"
+      ],
+      "title": "DockerfileString",
+      "type": "object"
+    },
+    "DocumentationLevel": {
+      "description": "Choose the first applicable level, in order.",
+      "enum": [
+        "specifies_every_command",
+        "specifies_some_commands",
+        "specifies_english",
+        "no_documentation"
+      ],
+      "title": "DocumentationLevel",
+      "type": "string"
+    },
+    "Env": {
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "ENV",
+          "default": "ENV",
+          "enum": [
+            "ENV"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "mapping": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Mapping",
+          "type": "object"
+        }
+      },
+      "required": [
+        "mapping"
+      ],
+      "title": "Env",
+      "type": "object"
+    },
+    "ErrorCode": {
+      "description": "If you don't have a specific error code in mind, use `unassigned`.",
+      "enum": [
+        "missing_data",
+        "unassigned",
+        "unresolvable_compile_error",
+        "unresolvable_dependency_error",
+        "extra_resources"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "ExtraResource": {
+      "enum": [
+        "arm_cpu",
+        "intel_cpu",
+        "intel_sgx_cpu",
+        "intel_vt_x",
+        "amd_sev",
+        "gpu",
+        "nvidia_gpu",
+        "fpga",
+        "more_than_1_hour",
+        "more_than_8gb_ram",
+        "more_than_100gb_storage",
+        "graphical_environment",
+        "remote_api",
+        "commercial_cloud",
+        "performance_counter_access",
+        "manipulate_linux_kernel_modules",
+        "manipulate_linux_cmdline",
+        "manipulate_kernel",
+        "manipulate_docker_containers",
+        "proprietary_software",
+        "large_download",
+        "ms_windows"
+      ],
+      "title": "ExtraResource",
+      "type": "string"
+    },
+    "LinkPath": {
+      "properties": {
+        "links": {
+          "items": {
+            "$ref": "#/$defs/BreakableLink"
+          },
+          "title": "Links",
+          "type": "array"
+        }
+      },
+      "required": [
+        "links"
+      ],
+      "title": "LinkPath",
+      "type": "object"
+    },
+    "NoncomputationalArticle": {
+      "properties": {
+        "type": {
+          "const": "NoncomputationalArticle",
+          "enum": [
+            "NoncomputationalArticle"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "NoncomputationalArticle",
+      "type": "object"
+    },
+    "RawRun": {
+      "description": "For special cases where the structured RUN does not work",
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "Raw RUN",
+          "default": "Raw RUN",
+          "enum": [
+            "Raw RUN"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "cmds": {
+          "title": "Cmds",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cmds"
+      ],
+      "title": "RawRun",
+      "type": "object"
+    },
+    "Run": {
+      "description": "A structured version of the usual RUN command.\n\nAll of the commands are run with ' && ' between them.",
+      "properties": {
+        "comment": {
+          "default": "",
+          "title": "Comment",
+          "type": "string"
+        },
+        "type": {
+          "const": "RUN",
+          "default": "RUN",
+          "enum": [
+            "RUN"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "cmds": {
+          "items": {
+            "$ref": "#/$defs/Command"
+          },
+          "title": "Cmds",
+          "type": "array"
+        },
+        "specific_env_vars": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "title": "Specific Env Vars",
+          "type": "object"
+        },
+        "eval_string": {
+          "default": "",
+          "title": "Eval String",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cmds"
+      ],
+      "title": "Run",
+      "type": "object"
+    },
+    "SourceFound": {
+      "properties": {
+        "type": {
+          "const": "SourceFound",
+          "enum": [
+            "SourceFound"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "path": {
+          "$ref": "#/$defs/LinkPath"
+        },
+        "is_source_versioned": {
+          "title": "Is Source Versioned",
+          "type": "boolean"
+        },
+        "extra_resources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ExtraResource"
+          },
+          "title": "Extra Resources",
+          "type": "array",
+          "uniqueItems": true
+        },
+        "reproducibility_documentation_level": {
+          "$ref": "#/$defs/DocumentationLevel"
+        },
+        "build_attempt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BuildAttempt"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "type",
+        "path",
+        "is_source_versioned",
+        "reproducibility_documentation_level"
+      ],
+      "title": "SourceFound",
+      "type": "object"
+    },
+    "SourceNotFound": {
+      "properties": {
+        "type": {
+          "const": "SourceNotFound",
+          "enum": [
+            "SourceNotFound"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "google_searches_tried": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Google Searches Tried",
+          "type": "array"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "google_searches_tried"
+      ],
+      "title": "SourceNotFound",
+      "type": "object"
+    },
+    "TestFail": {
+      "properties": {
+        "type": {
+          "const": "TestFail",
+          "enum": [
+            "TestFail"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "code": {
+          "$ref": "#/$defs/ErrorCode"
+        }
+      },
+      "required": [
+        "type",
+        "description",
+        "code"
+      ],
+      "title": "TestFail",
+      "type": "object"
+    },
+    "TestIncomplete": {
+      "properties": {
+        "type": {
+          "const": "TestIncomplete",
+          "enum": [
+            "TestIncomplete"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "notes": {
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "notes"
+      ],
+      "title": "TestIncomplete",
+      "type": "object"
+    },
+    "Unknown": {
+      "properties": {
+        "type": {
+          "const": "Unknown",
+          "default": "Unknown",
+          "enum": [
+            "Unknown"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "Unknown",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "version": {
+      "default": "0.2.11",
+      "title": "Version",
+      "type": "string"
+    },
+    "dblp_url": {
+      "format": "uri",
+      "maxLength": 2083,
+      "minLength": 1,
+      "title": "Dblp Url",
+      "type": "string"
+    },
+    "doi_url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Doi Url"
+    },
+    "other_article_urls": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "uri",
+            "maxLength": 2083,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Other Article Urls"
+    },
+    "authors": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Author"
+      },
+      "title": "Authors",
+      "type": "array"
+    },
+    "computational_status": {
+      "default": {
+        "type": "Unknown"
+      },
+      "discriminator": {
+        "mapping": {
+          "ComputationalArticle": "#/$defs/ComputationalArticle",
+          "NoncomputationalArticle": "#/$defs/NoncomputationalArticle",
+          "Unknown": "#/$defs/Unknown"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ComputationalArticle"
+        },
+        {
+          "$ref": "#/$defs/NoncomputationalArticle"
+        },
+        {
+          "$ref": "#/$defs/Unknown"
+        }
+      ],
+      "title": "Computational Status"
+    },
+    "badges": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Badge"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Badges"
+    }
+  },
+  "required": [
+    "dblp_url"
+  ],
+  "title": "Article",
+  "type": "object"
+}

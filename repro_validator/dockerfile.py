@@ -102,6 +102,8 @@ def to_dockerfile_source(
                     )
                 lines.append(f"    {package_str} \\")
             lines.append("    && rm -rf /var/lib/apt/lists/*")
+        elif isinstance(directive, schema.DockerfileString):
+            lines.append(directive.content)
         else:
             raise TypeError(
                 f"Unknown directive: {type(directive).__name__}: {directive!r}"

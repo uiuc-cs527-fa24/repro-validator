@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=schema.json
-
 dblp_url: https://dblp.org/rec/journals/taco/VerdoolaegeJCGTC13
 badges: []
 computational_status:
@@ -20,6 +18,8 @@ computational_status:
     - Results
   source_search:
     type: SourceFound
+    extra_resources:
+      - graphical_environment
     badges:
       - artifacts_evaluated_functional_v1_1
     path:
@@ -32,58 +32,45 @@ computational_status:
     is_source_versioned: yes
     reproducibility_documentation_level: specifies_every_command
     build_attempt:
-      time_spent: 60
+      time_spent: 600
       base_image:
         name: ubuntu
         tag: "18.04"
       build_directives:
+        - type: raw string
+          content: |
+            # Anything except FROM is valid
+            RUN apt-get --help
 
-        # Test apt-get install
+            # Include as many as you want, possibly the whole dockerfile
+            ENV PATH=$PATH:/opt/bin
+
+            RUN ls -ahlt
+
+        # Can mix in structured commands here
         - type: apt-get install
           packages:
-            - git
-            - dash
+            - python3
+            - python3-pip
 
-        # Test RUN cmds list
-        - type: RUN
-          cmds:
-            - echo "Hello world"
+        # Can go back to raw strings here
+        - type: raw string
+          content: |
+            # Anything except FROM is valid
+            WORKDIR /foo/bar
 
-        # Test RUN cmds string
-        - type: RUN
-          cmds: mkdir /contracts
-
-        # Test Raw RUN
-        - type: Raw RUN
-          cmds: |
-            echo "hello" > world && cat world | tee
-
-        # Test ENV
-        - type: ENV
-          mapping:
-            PATH: /opt/bin:$PATH
-
-        # Test Copy files that require mkdir
-        - type: COPY file literal
-          contents: "hello world"
-          destination: /tmp/test/foo/bar
-          executable: false
-
-        # Test copy files with executable: true
-        - type: COPY file literal
-          contents: |
-            #!/usr/bin/env bash
-            echo hi
-          destination: /opt/bin/foobar
-          executable: true
-
-        # This tests that the ENV and COPY file actually worked
-        - type: RUN
-          cmds: foobar
+            RUN touch tmp.txt
 
       test_directives:
-        - type: RUN
-          cmds:
-            - "true"
+
+        # Same rules apply for test_directives
+        - type: raw string
+          content: |
+            RUN echo <<EOF > test.txt
+            this is a test
+            EOF
+
+            RUN ls *.txt && echo hi
+
       result:
         type: BuildAndTestSuccess

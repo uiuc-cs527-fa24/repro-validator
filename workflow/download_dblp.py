@@ -12,6 +12,10 @@ import repro_validator.util
 import repro_validator.schema
 
 
+if typing.TYPE_CHECKING:
+    snakemake = typing.Any
+
+
 async def main(
         ins_outs: list[tuple[pathlib.Path, pathlib.Path]],
         seed: int,
@@ -48,7 +52,7 @@ async def main_one(
     include_sessions = article_group.extras.get("include_sessions")
     all_dblpcites = []
     for header, dblpcites in split_iterator(
-            doc.getchildren(),
+            iter(doc),
             lambda elem: elem.tag in {"h1", "h2"}
     ):
         if exclude_sessions:
@@ -74,8 +78,8 @@ async def main_one(
     article_xmls = [
         elem
         for dblpcites in all_dblpcites
-        for r in dblpcites.getchildren()
-        for elem in r.getchildren()
+        for r in dblpcites
+        for elem in r
         if elem.tag in {"inproceedings", "article"}
     ]
 
@@ -83,14 +87,14 @@ async def main_one(
     exclude_articles = article_group.extras.get("exclude_articles", frozenset())
     for article_xml in article_xmls:
         dblp_url = pydantic_core.Url(
-            "https://dblp.org/rec/" + article_xml.get("key")
+            "https://dblp.org/rec/" + expect_type(str, article_xml.get("key"))
         )
         if str(dblp_url) in exclude_articles:
             print(article_group.venue, article_group.date.year, "excluding article", str(dblp_url))
             continue
         electronic_edition_urls = [
-            pydantic_core.Url(subelem.text)
-            for subelem in article_xml.getchildren()
+            pydantic_core.Url(expect_type(str, subelem.text))
+            for subelem in article_xml
             if subelem.tag == "ee"
         ]
         doi_urls = [
@@ -106,11 +110,11 @@ async def main_one(
         ]
         authors = [
             repro_validator.schema.Author(
-                name=subelem.text,
-                dblp_pid_url=pydantic_core.Url("https://dblp.org/pid/" + subelem.get("pid")),
-                orcid_url=pydantic_core.Url("https://orcid.org/" + subelem.get("orcid")) if subelem.get("orcid") else None,
+                name=expect_type(str, subelem.text),
+                dblp_pid_url=pydantic_core.Url("https://dblp.org/pid/" + expect_type(str, subelem.get("pid"))),
+                orcid_url=pydantic_core.Url("https://orcid.org/" + expect_type(str, subelem.get("orcid"))) if subelem.get("orcid") else None,
             )
-            for subelem in article_xml.getchildren()
+            for subelem in article_xml
             if subelem.tag == "author"
         ]
         articles.append(
@@ -151,6 +155,12 @@ def split_iterator(
         else:
             section.append(elem)
     yield header, section
+
+
+def expect_type(typ: type[_T], data: typing.Any) -> _T:
+    if not isinstance(data, typ):
+        raise TypeError(f"Expected type {typ} for {data}")
+    return data
 
 
 asyncio.run(main(

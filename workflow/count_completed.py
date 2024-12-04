@@ -5,11 +5,11 @@ import yaml
 import polars
 import tabulate
 import pathlib
-from repro_validator.schema import ArticleGroup, Article
+from repro_validator.schema import ArticleGroup
 
 
 if typing.TYPE_CHECKING:
-    from snakemake.script import snakemake
+    snakemake = typing.Any
 
 
 article_groups = [

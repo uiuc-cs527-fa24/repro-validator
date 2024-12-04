@@ -3,6 +3,7 @@ import pydantic
 from typing_extensions import Annotated
 import asyncio
 import subprocess
+import json
 import os
 import pathlib
 import yaml
@@ -54,6 +55,11 @@ def validate(
         raise typer.Exit(code=1)
     else:
         console.print(f"[green]All good {path!s}")
+
+
+@app.command()
+def export_json_schema() -> None:
+    console.print_json(json.dumps(schema.Article.model_json_schema()))
 
 
 @app.command()

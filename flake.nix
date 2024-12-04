@@ -29,6 +29,7 @@
           pypkgs.snakemake
           pypkgs.dominate
           pypkgs.tabulate
+          pypkgs.types-tabulate
           pypkgs.icecream
         ];
         version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;

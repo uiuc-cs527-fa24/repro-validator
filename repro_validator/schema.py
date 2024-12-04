@@ -449,6 +449,7 @@ class BuildIncomplete(pydantic.BaseModel):
 
     notes: str
 
+
 class TestIncomplete(pydantic.BaseModel):
     type: typing.Literal["TestIncomplete"]
     notes: str
@@ -486,6 +487,16 @@ class DockerfileDirective(pydantic.BaseModel):
     # id: str
     # predecessors: frozenset[str]
     comment: str = ""
+
+
+class DockerfileString(DockerfileDirective, pydantic.BaseModel):
+    """Raw Dockerfile string.
+
+    Anything except FROM is valid here.
+    """
+
+    type: typing.Literal["raw string"]
+    content: str
 
 
 class Run(DockerfileDirective, pydantic.BaseModel):
@@ -586,7 +597,7 @@ class CopyFile(DockerfileDirective, pydantic.BaseModel):
 
 
 DockerfileDirectiveUnion: typing.TypeAlias = typing.Annotated[
-    Run | RawRun | AptGetInstall | Env | CopyFileLiteral | CopyFile,
+    Run | RawRun | AptGetInstall | Env | CopyFileLiteral | CopyFile | DockerfileString,
     pydantic.Field(json_schema_extra={"descriminator": "type"}),
 ]
 

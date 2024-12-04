@@ -183,9 +183,15 @@ async def test_valid_article_yaml(
     )
 
 
-def test_dockerfile_build() -> None:
-    valid_case = pathlib.Path("test_cases/valid.yaml")
-    article_yaml_text = valid_case.read_text()
+buildable_cases = [
+    pathlib.Path("test_cases/valid.yaml"),
+    pathlib.Path("test_cases/valid_raw_string.yaml")
+]
+
+
+@pytest.mark.parametrize("buildable_case", buildable_cases)
+def test_dockerfile_build(buildable_case: pathlib.Path) -> None:
+    article_yaml_text = buildable_case.read_text()
     article_dict = yaml.safe_load(article_yaml_text)
     article = schema.Article(**article_dict)
     assert isinstance(article.computational_status, schema.ComputationalArticle)

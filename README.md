@@ -13,11 +13,11 @@ repro-validator validate bibcode.yaml
 If you don't have Python 3.12, try using Nix (from source) or Docker (binary).
 
 ``` sh
-nix run github:uiuc-cs527-fa24/repro-validator/0.2.16 -- validate bibcode.yaml
+nix run github:uiuc-cs527-fa24/repro-validator/0.2.17 -- validate bibcode.yaml
 
 # or
 
-docker run --rm -t -e TERM=$TERM -e CHOWN=1 -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.16 validate bibcode.yaml
+docker run --rm -t -e TERM=$TERM -e CHOWN=1 -e UID=$(id -u) -e GID=$(id -g) -v $PWD:$PWD -w $PWD ghcr.io/charmoniumq/repro-validator:0.2.17 validate bibcode.yaml
 ```
 
 Whichever method, you have the following subcommands:
@@ -135,6 +135,12 @@ There is also `ENV`:
 Note: there is no equivalent of `WORKDIR`. Simply `cd` at the beginning of your `RUN` or use `env --chdir $dir $cmd...`.
 
 ## Changelog
+
+### 0.2.17
+
+- Fixed validator for COPY file literal when called from an outside directory.
+- Included BuildIncomplete and TestIncomplete.
+- Included DockerString.
 
 ### 0.2.16
 
