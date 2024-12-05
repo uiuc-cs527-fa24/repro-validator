@@ -6,6 +6,7 @@ import typing
 import datetime
 import aiohttp
 import pydantic
+import yarl
 import yaml
 import pathlib
 from . import schema
@@ -338,13 +339,13 @@ async def validate_link_path(
     for link0, link0_results, link1 in zip(
         link_path.links[:-1], url_results, link_path.links[1:]
     ):
-        link1_host = (link1.url.host or "").lower().encode()
-        link1_path = (link1.url.path or "").lower().encode()
+        link1_host = (link1.url.host or "").lower()
+        link1_path = (link1.url.path or "").lower()
         if link0_results:
             _, link0_status, link0_url, link0_page = await link0_results
-            if link1_host == b"web.archive.org":
-                archived_url = link1_path.split(b"/")[2]
-                if archived_url != str(link0.url).encode():
+            if link1_host == "web.archive.org":
+                archived_url = yarl.URL("/".join(link1_path.split("/")[3:]))
+                if archived_url != link0.url:
                     yield (
                         Level.error,
                         f"{link1.url!s} is an archive URL, but it does not look like an archived version of {link0.url!s}",
@@ -357,7 +358,10 @@ async def validate_link_path(
                 continue
             else:
                 link0_page = link0_page.lower()
-                if link1_host not in link0_page or link1_path not in link0_page:
+                if (
+                    link1_host.encode() not in link0_page
+                    or link1_path.encode() not in link0_page
+                ):
                     yield (
                         Level.possible_error,
                         f"I don't see where {link0.url!s} links to {link1.url!s}. If the link really is there, ignore this message.",

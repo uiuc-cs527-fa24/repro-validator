@@ -27,6 +27,7 @@ computational_status:
         - url: https://www.google.com/search?hl=en&q=ppcg%20compiler
         - url: https://github.com/Meinersbur/ppcg
           latest_alive_on: 2024-10-14 14:27-05:00
+        - url: https://web.archive.org/web/20240420164519/https://github.com/Meinersbur/ppcg
         - url: https://repo.or.cz/ppcg.git
           latest_alive_on: 2024-10-14 14:27-05:00
     is_source_versioned: yes
